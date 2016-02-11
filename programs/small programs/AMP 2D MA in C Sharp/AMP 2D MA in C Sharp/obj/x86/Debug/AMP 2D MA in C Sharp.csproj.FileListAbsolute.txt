@@ -1,0 +1,7 @@
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\bin\x86\Debug\AMPCode.dll
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\obj\x86\Debug\AMP 2D MA in C Sharp.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\obj\x86\Debug\AMP 2D MA in C Sharp.pdb
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\bin\x86\Debug\AMP 2D MA in C Sharp.exe.config
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\bin\x86\Debug\AMP 2D MA in C Sharp.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\bin\x86\Debug\AMP 2D MA in C Sharp.pdb
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 2D MA in C Sharp\AMP 2D MA in C Sharp\obj\x86\Debug\AMP 2D MA in C Sharp.csprojResolveAssemblyReference.cache

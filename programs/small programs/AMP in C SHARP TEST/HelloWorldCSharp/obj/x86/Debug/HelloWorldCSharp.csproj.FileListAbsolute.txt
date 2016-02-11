@@ -1,0 +1,6 @@
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\bin\x86\Debug\HelloWorldLib.dll
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\bin\x86\Debug\HelloWorldCSharp.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\bin\x86\Debug\HelloWorldCSharp.pdb
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\obj\x86\Debug\HelloWorldCSharp.csprojResolveAssemblyReference.cache
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\obj\x86\Debug\HelloWorldCSharp.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldCSharp\obj\x86\Debug\HelloWorldCSharp.pdb

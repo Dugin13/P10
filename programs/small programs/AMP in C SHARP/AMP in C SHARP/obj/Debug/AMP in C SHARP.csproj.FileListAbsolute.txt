@@ -1,0 +1,6 @@
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\bin\Debug\AMP in C SHARP.exe.config
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\bin\Debug\AMPCode.dll
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\bin\Debug\AMP in C SHARP.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\bin\Debug\AMP in C SHARP.pdb
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\obj\Debug\AMP in C SHARP.exe
+C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\obj\Debug\AMP in C SHARP.pdb

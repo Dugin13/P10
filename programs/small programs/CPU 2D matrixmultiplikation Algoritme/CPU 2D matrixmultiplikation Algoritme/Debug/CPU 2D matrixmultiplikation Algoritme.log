@@ -1,0 +1,15 @@
+﻿Build started 04-02-2016 13:46:04.
+     1>Project "C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\CPU 2D matrixmultiplikation Algoritme\CPU 2D matrixmultiplikation Algoritme.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\CPU 2D matrixmultiplikation Algoritme.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt "CPU 2D matrixmultiplikation Algoritme.cpp"
+         CPU 2D matrixmultiplikation Algoritme.cpp
+     1>c:\users\niels\documents\uni ting\p10\programmer\cpu 2d matrixmultiplikation algoritme\cpu 2d matrixmultiplikation algoritme\cpu 2d matrixmultiplikation algoritme.cpp(15): warning C4101: 'i' : unreferenced local variable
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\Debug\CPU 2D matrixmultiplikation Algoritme.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\Debug\CPU 2D matrixmultiplikation Algoritme.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\Debug\CPU 2D matrixmultiplikation Algoritme.lib" /MACHINE:X86 "Debug\CPU 2D matrixmultiplikation Algoritme.obj"
+         Debug\stdafx.obj
+         CPU 2D matrixmultiplikation Algoritme.vcxproj -> C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\Debug\CPU 2D matrixmultiplikation Algoritme.exe
+     1>Done Building Project "C:\Users\Niels\Documents\uni ting\P10\programmer\CPU 2D matrixmultiplikation Algoritme\CPU 2D matrixmultiplikation Algoritme\CPU 2D matrixmultiplikation Algoritme.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.50

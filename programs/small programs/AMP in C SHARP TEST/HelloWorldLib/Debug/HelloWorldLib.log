@@ -1,0 +1,20 @@
+﻿Build started 11-02-2016 13:27:07.
+     1>Project "C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldLib\HelloWorldLib.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D HELLOWORLDLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\HelloWorldLib.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D HELLOWORLDLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D HELLOWORLDLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\HelloWorldLib.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt HelloWorldLib.cpp
+         HelloWorldLib.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.lib" /MACHINE:X86 /DLL Debug\dllmain.obj
+         Debug\HelloWorldLib.obj
+         Debug\stdafx.obj
+            Creating library C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.lib and object C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.exp
+         HelloWorldLib.vcxproj -> C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\Debug\HelloWorldLib.dll
+     1>Done Building Project "C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP TEST\HelloWorldLib\HelloWorldLib.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.25
