@@ -5,3 +5,6 @@ C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 1D MA in C Sharp\AMP 1D MA 
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\bin\x86\Debug\AMP 1D MA in C Sharp.pdb
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\obj\x86\Debug\AMP 1D MA in C Sharp.exe
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\obj\x86\Debug\AMP 1D MA in C Sharp.pdb
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\bin\x86\Debug\AMP 1D MA in C Sharp.exe.config
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\obj\x86\Debug\AMP 1D MA in C Sharp.exe
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP 1D MA in C Sharp\AMP 1D MA in C Sharp\obj\x86\Debug\AMP 1D MA in C Sharp.pdb
