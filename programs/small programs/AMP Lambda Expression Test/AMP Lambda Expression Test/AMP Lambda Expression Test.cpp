@@ -39,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	func.push_back(1); // a
 	func.push_back(1); // +
 	func.push_back(2); // b
-	func.push_back(-1); // -> output
+	func.push_back(0); // -> output
 
 
 	int *p_input = &input[0][0];
@@ -54,30 +54,35 @@ int _tmain(int argc, _TCHAR* argv[])
 	auto GPU_code = [=](concurrency::index<1> idx) restrict(amp)
 	{
 		int i = idx[0];
-		int temp_result_holder[number_Of_Temp_result];
+		int temp_result_holder[3]; // number_Of_Temp_result
 		for (int x = 0; x < number_Of_Functions; x++)
 		{
 			// finding which imput to use
 			int input_1, input_2;
+			// for input 1
 			if (GPU_Func[x][0] > 0)
 			{
-				int temp = GPU_Func[x][0]-1;
-				input_1 = GPU_input[temp][i];
+				int temp_index = GPU_Func[x][0] - 1;
+				input_1 = GPU_input[temp_index][i];
 			}
 			else
 			{
-				// get from temp_result
+				int temp_index = (GPU_Func[x][0] * -1) - 1;
+				input_1 = temp_result_holder[temp_index];
 			}
+			// for input 2
 			if (GPU_Func[x][2] > 0)
 			{
-				int temp = GPU_Func[x][2]-1;
-				input_2 = GPU_input[temp][i];
+				int temp_index = GPU_Func[x][2] - 1;
+				input_2 = GPU_input[temp_index][i];
 			}
 			else
 			{
-				// get from temp_result
+				int temp_index = (GPU_Func[x][2] * -1) - 1;
+				input_2 = temp_result_holder[temp_index];
 			}
 			int temp_result=0;
+
 			// finding which operator to used
 			if (GPU_Func[x][1] = 1 ) // (+)
 			{
@@ -97,16 +102,17 @@ int _tmain(int argc, _TCHAR* argv[])
 			}
 			else
 			{
-				// some king of error
+				// some kind of error
 			}
 			// place temp_result in in place
-			if (GPU_Func[x][3] < 0) // return the result
+			if (GPU_Func[x][3] == 0) // return the result
 			{
 				GPU_output[i] = temp_result;
 			}
 			else // place the result in temp_result_holder
 			{
-
+				int temp_index = (GPU_Func[x][3] * -1) - 1;
+				temp_result_holder[temp_index] = temp_result;
 			}
 		}
 	};
