@@ -10,22 +10,29 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	const int Size = 3;
 	const int Size1d = Size*Size;
-	const int Size_Of_input = 2;
-	const int number_Of_Functions = 1;
-	const int number_Of_Temp_result = 1; // must not be zero even know there is no temp result!!!
+	const int Size_Of_input = 4;
+	const int number_Of_Functions = 3;
+	const int number_Of_Temp_result = 2; // must not be zero even know there is no temp result!!!
 	int input[Size_Of_input][Size1d];
 	int A[Size1d];
 	int B[Size1d];
 	int C[Size1d];
+	int D[Size1d];
+
+	int Output[Size1d];
 	int i, x, y, z;
 
 	for (i = 0; i < Size1d; i++)
 	{
 		A[i] = 2;
 		B[i] = 3;
+		C[i] = 4;
+		D[i] = 5;
 		input[0][i] = A[i];
 		input[1][i] = B[i];
-		C[i] = 0;
+		input[2][i] = C[i];
+		input[3][i] = D[i];
+		Output[i] = 0;
 	}
 	std::vector<int> func; 
 	//for (i = 0; i < 3; i++)
@@ -36,18 +43,31 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	}
 	//}
 	// a+b -> output
+	//func.push_back(1); // a
+	//func.push_back(1); // +
+	//func.push_back(2); // b
+	//func.push_back(0); // -> output
+
+	// (a+b)*(c+d)
 	func.push_back(1); // a
 	func.push_back(1); // +
 	func.push_back(2); // b
+	func.push_back(-1); // -> temp 1
+
+	func.push_back(3); // c
+	func.push_back(1); // +
+	func.push_back(4); // d
+	func.push_back(-2); // -> temp 2
+
+	func.push_back(3); // temp 1
+	func.push_back(3); // *
+	func.push_back(4); // temp 2
 	func.push_back(0); // -> output
-
-
-
 
 
 	int *p_input = &input[0][0];
 	concurrency::array_view<int, 2> GPU_input(Size_Of_input, Size1d, p_input);
-	concurrency::array_view<int, 1> GPU_output(Size1d, C);
+	concurrency::array_view<int, 1> GPU_output(Size1d, Output);
 	GPU_output.discard_data();
 	
 	concurrency::array_view<int, 2> GPU_Func(number_Of_Functions, 4, func);
@@ -97,7 +117,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				input_2 = GPU_Temp_result[i][temp_index];
 			}
 			int temp_result=0;
-
+			// -----------------------------------------------------------------------------
 			// finding which operator to used
 			if (GPU_Func[x][1] == 1 ) // (+)
 			{
@@ -119,6 +139,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			{
 				// some kind of error
 			}
+			// -------------------------------------------------------------------------------
 			// place temp_result in in place
 			if (GPU_Func[x][3] == 0) // return the result
 			{
@@ -136,7 +157,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	GPU_output.synchronize();
 	for (int i = 0; i < Size1d; i++)
 	{
-		std::cout << "A: " << A[i] << "	B: " << B[i] << "	c: " << C[i] << std::endl;
+		std::cout << "A: " << A[i] << "	B: " << B[i] << "	c: " << C[i] << "	output: " << Output[i] << std::endl;
 	}
 	std::string str;
 	std::getline(std::cin, str);
