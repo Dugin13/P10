@@ -82,8 +82,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	concurrency::array_view<int, 2> GPU_Temp_result(Size1d, number_Of_Temp_result, Temp_result);
 	GPU_Temp_result.discard_data();
-	
-	//concurrency::array_view<int, 2> GPU_Func(3,4, A)
 
 
 
