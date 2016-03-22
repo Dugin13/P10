@@ -5,3 +5,6 @@ C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\b
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\obj\x86\Debug\AMP in C SHARP.exe
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\obj\x86\Debug\AMP in C SHARP.pdb
 C:\Users\Niels\Documents\uni ting\P10\programmer\AMP in C SHARP\AMP in C SHARP\obj\x86\Debug\AMP in C SHARP.csprojResolveAssemblyReference.cache
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP in C SHARP\AMP in C SHARP\bin\x86\Debug\AMP in C SHARP.exe.config
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP in C SHARP\AMP in C SHARP\obj\x86\Debug\AMP in C SHARP.exe
+C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\AMP in C SHARP\AMP in C SHARP\obj\x86\Debug\AMP in C SHARP.pdb

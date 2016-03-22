@@ -18,6 +18,7 @@ extern "C" __declspec (dllexport) void _stdcall GPU_part_for_1D(int* A, int* B, 
 
 	concurrency::parallel_for_each(GPU_C.extent, [=](concurrency::index<1> i) restrict(amp)
 	{
+		GPU_C[i] = 0;
 		int x = i[0] / GPU_Size;
 		int y = i[0] % GPU_Size;
 		//D[i] = (x*Size) + y;

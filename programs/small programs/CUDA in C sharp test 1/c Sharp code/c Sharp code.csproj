@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D6B59A84-3EF3-4198-8A15-D107F1425046}</ProjectGuid>
+    <ProjectGuid>{16C3E2F0-DC5D-462A-8E3B-B059BD9121CC}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CUDAfy_1D_MA</RootNamespace>
-    <AssemblyName>CUDAfy 1D MA</AssemblyName>
+    <RootNamespace>c_Sharp_code</RootNamespace>
+    <AssemblyName>c Sharp code</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -16,6 +16,7 @@ extern "C" __declspec (dllexport) void _stdcall GPU_part_for_1D(int* A, int* B, 
 	{
 		int x = i[0];
 		int y = i[1];
+		GPU_C[y][x] = 0;
 		for (int z = 0; z < Size; z++)
 		{
 			GPU_C[y][x] += GPU_A[y][z] * GPU_B[z][x];
