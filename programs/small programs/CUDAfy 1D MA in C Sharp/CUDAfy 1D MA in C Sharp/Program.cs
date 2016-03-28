@@ -14,12 +14,12 @@ namespace CUDAfy_1D_MA_in_C_Sharp
     {
         static void Main(string[] args)
         {
-            const int Size = 3;
+            const int Size = 1000;
             const int Size1d = Size * Size;
             int[] A = new int[Size1d];
             int[] B = new int[Size1d];
             int[] C = new int[Size1d];
-            int i, n = 10, count = 100;
+            int i, n = 5, count = 100;
 
             double[] time;
 

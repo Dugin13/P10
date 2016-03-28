@@ -59,9 +59,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	func.push_back(4); // d
 	func.push_back(-2); // -> temp 2
 
-	func.push_back(3); // temp 1
+	func.push_back(-1); // temp 1
 	func.push_back(3); // *
-	func.push_back(4); // temp 2
+	func.push_back(-2); // temp 2
 	func.push_back(0); // -> output
 
 
