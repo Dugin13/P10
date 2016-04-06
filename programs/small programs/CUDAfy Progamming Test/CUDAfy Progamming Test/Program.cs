@@ -12,15 +12,11 @@ namespace CUDAfy_Progamming_Test
 {
     class Program
     {
-        static int SizeOfInput = 4;
-        static int AmountOfNumbers = 10;
-        static int numberOfFunctions = 3;
-        static int numberOfTempResult = 2; // must not be zero even know there is no temp result!!! 
 
         static int[,] makeTestFunc()
         {
             //// (a+b)*(c+d)
-            int[,] func = new int[numberOfFunctions, 4];
+            int[,] func = new int[3, 4];
             func[0, 0] = 1; // a
             func[0, 1] = 1; // +
             func[0, 2] = 2; // b
@@ -39,7 +35,7 @@ namespace CUDAfy_Progamming_Test
             return func;
         }
 
-        static double[,] makeEmtyTempResult()
+        static double[,] makeEmtyTempResult(int AmountOfNumbers, int numberOfTempResult)
         {
             double[,] temp = new double[AmountOfNumbers, numberOfTempResult];
             for (int i = 0; i < AmountOfNumbers; i++)
@@ -54,11 +50,23 @@ namespace CUDAfy_Progamming_Test
         }
         static void Main(string[] args)
         {
+            bacisrun();
+
+
+        }
+        static void bacisrun()
+        {
+            int SizeOfInput = 4;
+            int AmountOfNumbers = 10;
+            int numberOfTempResult = 2; // must not be zero even know there is no temp result!!! 
 
             double[,] input = new double[SizeOfInput, AmountOfNumbers];
-            double[][] inputTest = new double[SizeOfInput][];
             double[] output = new double[AmountOfNumbers];
-            double[,] tempResult = makeEmtyTempResult();
+            double[,] tempResult = makeEmtyTempResult(AmountOfNumbers, numberOfTempResult);
+
+            int[,] func = makeTestFunc();
+
+            int numberOfFunctions = func.GetLength(0);
 
             for (int i = 0; i < SizeOfInput; i++)
             {
@@ -88,7 +96,6 @@ namespace CUDAfy_Progamming_Test
                 threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
                 blocksPerGrid = (AmountOfNumbers / GPU_prop.MaxThreadsPerBlock) + 1;
             }
-            int[,] func = makeTestFunc();
 
 
             //CPU_func(input, output, func, tempResult, AmountOfNumbers, numberOfFunctions);
@@ -111,16 +118,15 @@ namespace CUDAfy_Progamming_Test
             // copy the array 'c' back from the GPU to the CPU
             gpu.CopyFromDevice(GPU_output, output);
 
-
-            //int stop = 0;
-            //gpu.Free(GPU_input);
-            //gpu.Free(GPU_tempResult);
-            //gpu.Free(GPU_output);
-            //gpu.Free(GPU_func);
-
-
-
+            gpu.Free(GPU_input);
+            gpu.Free(GPU_tempResult);
+            gpu.Free(GPU_output);
+            gpu.Free(GPU_func);
         }
+
+
+
+
         [Cudafy]
         public static void GPU_test(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
         {
@@ -189,7 +195,7 @@ namespace CUDAfy_Progamming_Test
                         // some kind of error
                     }
                     // -------------------------------------------------------------------------------
-                    // place temp_result in in place
+                    // place temp_result in output
                     if (GPU_func[x, 3] == 0) // return the result
                     {
                         GPU_output[i] = temp_result;
@@ -211,7 +217,6 @@ namespace CUDAfy_Progamming_Test
                 CPU_func_helper( i, GPU_input, GPU_output, GPU_func, GPU_TempResult, AmountOfNumbers, number_Of_Functions);
             }
         }
-
 
         public static void CPU_func_helper(int i, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
         {
