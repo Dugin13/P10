@@ -43,18 +43,19 @@ namespace CUDAfy_Progamming_Test
         private static int findnumberOfTempResult(int[,] func)
         {
             int number = 0;
-            for (int i = 0; i < func.GetLength(0); i++ )
+            for (int i = 0; i < func.GetLength(0); i++)
             {
-                if(func[i,3] < 0)
+                if (number > func[i, 3])
                 {
-                    number++;
+                    number = func[i, 3];
                 }
             }
-            if(number ==0)
+            if (number == 0)
             {
-                number++;
+                number--;
             }
 
+            number = number * -1;
             return number;
         }
 
