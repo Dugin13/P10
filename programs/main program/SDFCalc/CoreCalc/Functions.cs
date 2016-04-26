@@ -43,6 +43,7 @@ namespace Corecalc {
     public bool IsPlaceHolder { get; private set; }  // May be overwritten by an SDF
     private bool isVolatile;                         // True for RAND, NOW, some SDFs
     private static readonly IDictionary<String, Function> table;
+    private static GPU_func GPU;
 
     public static readonly Type type = typeof(Function);  // Used in IL code generation
 
@@ -633,6 +634,34 @@ namespace Corecalc {
         return ErrorValue.argTypeError;
     }
 
+    
+      // skal måske ikke bruges
+      //public static Value GPUFunc(Value v0)
+    //{
+    //    if (v0 is ErrorValue) return v0;
+    //    ArrayValue v0arr = v0 as ArrayValue;
+    //    if (v0arr != null)
+    //    {
+
+    //        int cols = v0arr.Rows, rows = v0arr.Cols;
+    //        double[,] GPU_input = ArrayValue.ToDoubleArray2D(v0arr);
+
+    //        Value[,] result = new Value[rows, cols];
+    //        for (int c = 0; c < cols; c++)
+    //            for (int r = 0; r < rows; r++)
+    //                result[r, c] = NumberValue.Make(42);
+
+
+
+    //        return new ArrayExplicit(result);
+    //    }
+    //    else
+    //        return ErrorValue.argTypeError;
+    //}
+
+
+
+
     public static Value VArray(Value[] vs) {
       Value[,] result = new Value[1, vs.Length];
       for (int r = 0; r < vs.Length; r++)
@@ -799,6 +828,7 @@ namespace Corecalc {
     // Populate table of functions.  Corresponding data for sheet-defined 
     // functions are in FunctionInfo.functions and in a CGComposite switch.
     static Function() {
+        GPU = new GPU_func();   // TODO
       table = new Dictionary<String, Function>();
       // <fun> : unit -> number
       new Function("NOW", MakeNumberFunction(ExcelNow),
@@ -1042,8 +1072,83 @@ namespace Corecalc {
       // VSCAN: function * array * number -> array
       new Function("VSCAN", MakeFunction(VScan));
 
+      new Function("GPU", GPUFunction()); //GPUFUNC
+
+      new Function("PRODUCT", ProductFunction());
         // VIGTIG: gpu funktion skal nok sættes ind her
     }
+    private static Applier GPUFunction()
+    {
+        return
+          delegate(Sheet sheet, Expr[] es, int col, int row)
+          {
+              if (es.Length == 2)
+              {
+                  Value v0 = es[0].Eval(sheet, col, row);
+   
+                  //Value v1 = es[1].Eval(sheet, col, row); tror ikke der er nøvending at gøre dette
+
+                  int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall);
+                  if (v0 is ErrorValue) return v0;
+                  ArrayValue v0arr = v0 as ArrayValue;
+                  if (v0arr != null)
+                  {
+
+                      int cols = v0arr.Rows, rows = v0arr.Cols;
+                      double[,] GPU_input = ArrayValue.ToDoubleArray2D(v0arr);
+
+                      Value[,] result = new Value[rows, cols];
+                      for (int c = 0; c < cols; c++)
+                          for (int r = 0; r < rows; r++)
+                              result[r, c] = NumberValue.Make(42 + Value.ToDoubleOrNan(es[1].Eval(sheet, col, row)));
+
+
+                      return new ArrayExplicit(result);
+                  }
+                  else
+                      return ErrorValue.argTypeError;
+              }
+              else
+              {
+                  return ErrorValue.argCountError;
+              }
+          };
+    }
+
+    private static Applier ProductFunction()
+    {
+        return
+          delegate(Sheet sheet, Expr[] es, int col, int row)
+          {
+              if (es.Length > 0)
+              {
+                  double result = 1;
+                  for (int i = 0; i < es.Length; i++)
+                  {
+                      Value v = es[i].Eval(sheet, col, row);
+                      if (v is ErrorValue) return v;
+                      if(v is NumberValue)
+                      {
+                          result = result * Value.ToDoubleOrNan(v);
+                      }
+                      else if (v is ArrayValue)
+                      {
+                          ArrayValue vArr = v as ArrayValue;
+                          int cols = vArr.Rows, rows = vArr.Cols;
+                          for (int c = 0; c < cols; c++)
+                              for (int r = 0; r < rows; r++)
+                                  result = result * Value.ToDoubleOrNan(vArr[r, c]);
+                      }
+                  }
+                      return NumberValue.Make(result);
+              }
+              else
+              {
+                  return ErrorValue.argCountError;
+              }
+          };
+    }
+
 
     private Function(String name, int fixity, Applier applier)
       : this(name, applier, fixity: fixity) { }

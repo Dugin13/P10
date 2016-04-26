@@ -7,7 +7,7 @@ using Cudafy;
 using Cudafy.Host;
 using Cudafy.Translator;
 
-namespace CoreCalc
+namespace Corecalc
 {
     class GPU_func
     {
@@ -22,7 +22,98 @@ namespace CoreCalc
             gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
             gpu.LoadModule(km);
 
-            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            GPU_prop = gpu.GetDeviceProperties();
+        }
+
+        public int[,] makeFunc(FunCall input)
+        {
+
+            List<List<int>> temp = makeFuncHelper(input, -1, true);
+
+            int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
+
+
+
+            int[,] result = new int[tempArray.Count(), 4];
+            for (int i = 0; i < tempArray.Count(); i++)
+            {
+                for (int x = 0; x < 4; x++)
+                {
+                    result[i, x] = tempArray[i][x];
+                }
+            }
+
+
+            return result;
+        }
+
+        private List<List<int>> makeFuncHelper(FunCall input, int tempresult, bool root)
+        {
+            List<List<int>> temp = new List<List<int>>();
+            int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
+            // find where to place output
+            int outputPlace = 0;
+            if (!root)
+            {
+                outputPlace = tempresult;
+            }
+
+            if (input.es[0] is FunCall)
+            {
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, tempresult--, false));
+                locationOne = temp[temp.Count - 1][3];
+            }
+            else if(input.es[0] is NumberConst)
+            {
+                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else
+            {
+                // some kind of error...
+            }
+            if (input.es[1] is FunCall)
+            {
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, tempresult--, false));
+                locationTwo = temp[temp.Count - 1][3];
+            }
+            else if (input.es[1] is NumberConst)
+            {
+                locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else
+            {
+                // some kind of error...
+            }
+
+            int functionValue = 0; ;
+            string function = input.function.name.ToString();
+            switch (function)
+            {
+                case "+":
+                    functionValue = 1;
+                    break;
+                case "-":
+                    functionValue = 2;
+                    break;
+                case "*":
+                    functionValue = 3;
+                    break;
+                case "/":
+                    functionValue = 4;
+                    break;
+                default:
+                    // some kind of error...
+                    break;
+            }
+            List<int> result = new List<int>();
+            result.Add(locationOne);
+            result.Add(functionValue);
+            result.Add(locationTwo);
+            result.Add(outputPlace);
+
+            temp.Add(result);
+
+            return temp;
         }
 
         private static double[,] makeEmtyTempResult(int AmountOfNumbers, int numberOfTempResult)
@@ -99,7 +190,7 @@ namespace CoreCalc
             // launch add on N threads
             
             // had to add Microsoft.CSharp.dll references for this to work ?
-            gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_func(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
+            gpu.Launch(threadsPerBlock, blocksPerGrid).GPUFunc(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
             
             // copy the array 'c' back from the GPU to the CPU
             gpu.CopyFromDevice(GPU_output, output);
@@ -115,7 +206,7 @@ namespace CoreCalc
         }
 
         [Cudafy]
-        private static void GPU_func(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
+        private static void GPUFunc(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
         {
             int i = thread.threadIdx.x + thread.blockDim.x * thread.blockIdx.x;
             if (i < AmountOfNumbers)

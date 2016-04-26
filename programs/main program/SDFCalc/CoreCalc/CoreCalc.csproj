@@ -50,7 +50,7 @@
       <HintPath>..\dlls\ClrTest.Reflection.ILVisualizer.dll</HintPath>
     </Reference>
     <Reference Include="Cudafy.NET">
-      <HintPath>..\..\CudafyV1.29\bin\Cudafy.NET.dll</HintPath>
+      <HintPath>..\..\..\..\..\programmer\CudafyV1.29\bin\Cudafy.NET.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />

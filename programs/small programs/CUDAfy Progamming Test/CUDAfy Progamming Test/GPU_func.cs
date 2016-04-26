@@ -23,7 +23,7 @@ namespace CUDAfy_Progamming_Test
             gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
             gpu.LoadModule(km);
 
-            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            GPU_prop = gpu.GetDeviceProperties();
         }
 
         private static double[,] makeEmtyTempResult(int AmountOfNumbers, int numberOfTempResult)
