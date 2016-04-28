@@ -25,10 +25,13 @@ namespace Corecalc
             GPU_prop = gpu.GetDeviceProperties();
         }
 
+
+
+        private int tempresult;
         public int[,] makeFunc(FunCall input)
         {
-
-            List<List<int>> temp = makeFuncHelper(input, -1, true);
+            tempresult = -1;
+            List<List<int>> temp = makeFuncHelper(input, true);
 
             int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
 
@@ -47,7 +50,35 @@ namespace Corecalc
             return result;
         }
 
-        private List<List<int>> makeFuncHelper(FunCall input, int tempresult, bool root)
+        public int[,] FuncOptimizer(int[,] input)
+        {
+            int length = input.GetLength(0);
+
+            List<int> usedTempresult = new List<int>();
+            
+
+            for (int i = 0; i < length; i++ )
+            {
+                if(!usedTempresult.Contains(input[i,3]))
+                {
+                    usedTempresult.Add(input[i, 3]);
+                }
+                if(usedTempresult.Contains(input[i,0]))
+                {
+
+                }
+                if (usedTempresult.Contains(input[i, 2]))
+                {
+
+                }
+            }
+
+
+
+                return null;
+        }
+
+        private List<List<int>> makeFuncHelper(FunCall input, bool root)
         {
             List<List<int>> temp = new List<List<int>>();
             int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
@@ -56,11 +87,12 @@ namespace Corecalc
             if (!root)
             {
                 outputPlace = tempresult;
+                tempresult--;
             }
 
             if (input.es[0] is FunCall)
             {
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, tempresult--, false));
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, false));
                 locationOne = temp[temp.Count - 1][3];
             }
             else if(input.es[0] is NumberConst)
@@ -73,7 +105,7 @@ namespace Corecalc
             }
             if (input.es[1] is FunCall)
             {
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, tempresult--, false));
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
                 locationTwo = temp[temp.Count - 1][3];
             }
             else if (input.es[1] is NumberConst)
