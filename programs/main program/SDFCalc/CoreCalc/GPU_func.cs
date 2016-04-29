@@ -31,7 +31,7 @@ namespace Corecalc
         public int[,] makeFunc(FunCall input)
         {
             tempresult = -1;
-            List<List<int>> temp = makeFuncHelper(input, true);
+            List<List<int>> temp = makeFuncHelper(input, 0,0);
 
             int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
 
@@ -78,44 +78,108 @@ namespace Corecalc
                 return null;
         }
 
-        private List<List<int>> makeFuncHelper(FunCall input, bool root)
+        private List<List<int>> makeFuncHelper(FunCall input, int outputPlace, int notToUseValue)
         {
             List<List<int>> temp = new List<List<int>>();
             int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
             // find where to place output
-            int outputPlace = 0;
-            if (!root)
-            {
-                outputPlace = tempresult;
-                tempresult--;
-            }
 
-            if (input.es[0] is FunCall)
+            bool oneIsFunc = (input.es[0] is FunCall);
+            bool oneIsNumber = (input.es[0] is NumberConst);
+            bool twoIsFunc = (input.es[1] is FunCall);
+            bool twoIsNumber = (input.es[1] is NumberConst);
+           
+            if(oneIsFunc && twoIsFunc)
             {
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, false));
+                int i=-1, x=0, y=0;
+                while(x == 0 || y ==0)
+                {
+                    if(i != notToUseValue && x==0)
+                    {
+                        x=i;
+                        i--;
+                    }
+                    if(i != notToUseValue && y==0)
+                    {
+                        y=i;
+                        i--;
+                    }
+                    i--;
+                }
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall,x,y));
                 locationOne = temp[temp.Count - 1][3];
-            }
-            else if(input.es[0] is NumberConst)
-            {
-                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
-            }
-            else
-            {
-                // some kind of error...
-            }
-            if (input.es[1] is FunCall)
-            {
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall,y,x));
                 locationTwo = temp[temp.Count - 1][3];
             }
-            else if (input.es[1] is NumberConst)
+            else if (oneIsFunc && twoIsNumber)
             {
+                int i = -1, x = 0;
+                while (x == 0)
+                {
+                    if (i != notToUseValue && x == 0)
+                    {
+                        x = i;
+                        i--;
+                    }
+                    i--;
+                }
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, x, 0));
+                locationOne = temp[temp.Count - 1][3];
+                locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else if (oneIsNumber && twoIsFunc)
+            {
+                int i = -1, y = 0;
+                while (y == 0)
+                {
+                    if (i != notToUseValue && y == 0)
+                    {
+                        y = i;
+                        i--;
+                    }
+                    i--;
+                }
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, y, 0));
+                locationTwo = temp[temp.Count - 1][3];
+                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else if (oneIsNumber && twoIsNumber)
+            {
+                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
                 locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
             }
             else
             {
                 // some kind of error...
             }
+
+
+            //if (input.es[0] is FunCall)
+            //{
+            //    temp.AddRange(makeFuncHelper(input.es[0] as FunCall,));
+            //    locationOne = temp[temp.Count - 1][3];
+            //}
+            //else if(input.es[0] is NumberConst)
+            //{
+            //    locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            //}
+            //else
+            //{
+            //    // some kind of error...
+            //}
+            //if (input.es[1] is FunCall)
+            //{
+            //    temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
+            //    locationTwo = temp[temp.Count - 1][3];
+            //}
+            //else if (input.es[1] is NumberConst)
+            //{
+            //    locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            //}
+            //else
+            //{
+            //    // some kind of error...
+            //}
 
             int functionValue = 0; ;
             string function = input.function.name.ToString();
