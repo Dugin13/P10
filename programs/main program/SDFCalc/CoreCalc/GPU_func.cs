@@ -14,7 +14,7 @@ namespace Corecalc
         private CudafyModule km;
         private GPGPU gpu;
         private GPGPUProperties GPU_prop;
-
+        private List<int> tempResult;
         public GPU_func()
         {
             km = CudafyTranslator.Cudafy();
@@ -26,12 +26,39 @@ namespace Corecalc
         }
 
 
+        // there should be not need for this function
+        public int[,] FuncOptimizer(int[,] input)
+        {
+            int length = input.GetLength(0);
 
-        private int tempresult;
+            List<int> usedTempresult = new List<int>();
+
+
+            for (int i = 0; i < length; i++)
+            {
+                if (!usedTempresult.Contains(input[i, 3]))
+                {
+                    usedTempresult.Add(input[i, 3]);
+                }
+                if (usedTempresult.Contains(input[i, 0]))
+                {
+
+                }
+                if (usedTempresult.Contains(input[i, 2]))
+                {
+
+                }
+            }
+
+
+
+            return null;
+        }
+        
         public int[,] makeFunc(FunCall input)
         {
-            tempresult = -1;
-            List<List<int>> temp = makeFuncHelper(input, 0,0);
+            tempResult = new List<int>();
+            List<List<int>> temp = makeFuncHelper(input, true);
 
             int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
 
@@ -50,35 +77,7 @@ namespace Corecalc
             return result;
         }
 
-        public int[,] FuncOptimizer(int[,] input)
-        {
-            int length = input.GetLength(0);
-
-            List<int> usedTempresult = new List<int>();
-            
-
-            for (int i = 0; i < length; i++ )
-            {
-                if(!usedTempresult.Contains(input[i,3]))
-                {
-                    usedTempresult.Add(input[i, 3]);
-                }
-                if(usedTempresult.Contains(input[i,0]))
-                {
-
-                }
-                if (usedTempresult.Contains(input[i, 2]))
-                {
-
-                }
-            }
-
-
-
-                return null;
-        }
-
-        private List<List<int>> makeFuncHelper(FunCall input, int outputPlace, int notToUseValue)
+        private List<List<int>> makeFuncHelper(FunCall input, bool root)
         {
             List<List<int>> temp = new List<List<int>>();
             int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
@@ -89,97 +88,35 @@ namespace Corecalc
             bool twoIsFunc = (input.es[1] is FunCall);
             bool twoIsNumber = (input.es[1] is NumberConst);
            
-            if(oneIsFunc && twoIsFunc)
+
+
+            if (oneIsFunc)
             {
-                int i=-1, x=0, y=0;
-                while(x == 0 || y ==0)
-                {
-                    if(i != notToUseValue && x==0)
-                    {
-                        x=i;
-                        i--;
-                    }
-                    if(i != notToUseValue && y==0)
-                    {
-                        y=i;
-                        i--;
-                    }
-                    i--;
-                }
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall,x,y));
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall,false));
                 locationOne = temp[temp.Count - 1][3];
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall,y,x));
-                locationTwo = temp[temp.Count - 1][3];
             }
-            else if (oneIsFunc && twoIsNumber)
+            else if(oneIsNumber)
             {
-                int i = -1, x = 0;
-                while (x == 0)
-                {
-                    if (i != notToUseValue && x == 0)
-                    {
-                        x = i;
-                        i--;
-                    }
-                    i--;
-                }
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, x, 0));
-                locationOne = temp[temp.Count - 1][3];
-                locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
-            }
-            else if (oneIsNumber && twoIsFunc)
-            {
-                int i = -1, y = 0;
-                while (y == 0)
-                {
-                    if (i != notToUseValue && y == 0)
-                    {
-                        y = i;
-                        i--;
-                    }
-                    i--;
-                }
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, y, 0));
-                locationTwo = temp[temp.Count - 1][3];
                 locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
             }
-            else if (oneIsNumber && twoIsNumber)
+            else
             {
-                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+                // some kind of error...
+            }
+            if (twoIsFunc)
+            {
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
+                locationTwo = temp[temp.Count - 1][3];
+               
+            }
+            else if (twoIsNumber)
+            {
                 locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
             }
             else
             {
                 // some kind of error...
             }
-
-
-            //if (input.es[0] is FunCall)
-            //{
-            //    temp.AddRange(makeFuncHelper(input.es[0] as FunCall,));
-            //    locationOne = temp[temp.Count - 1][3];
-            //}
-            //else if(input.es[0] is NumberConst)
-            //{
-            //    locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
-            //}
-            //else
-            //{
-            //    // some kind of error...
-            //}
-            //if (input.es[1] is FunCall)
-            //{
-            //    temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
-            //    locationTwo = temp[temp.Count - 1][3];
-            //}
-            //else if (input.es[1] is NumberConst)
-            //{
-            //    locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
-            //}
-            //else
-            //{
-            //    // some kind of error...
-            //}
 
             int functionValue = 0; ;
             string function = input.function.name.ToString();
@@ -202,6 +139,37 @@ namespace Corecalc
                     break;
             }
             List<int> result = new List<int>();
+
+
+            if (oneIsFunc)
+            {
+                tempResult.RemoveAt(tempResult.FindLastIndex(x => x == locationOne));
+            }
+            if(twoIsFunc)
+            {
+                tempResult.RemoveAt(tempResult.FindLastIndex(x => x == locationTwo));
+            }
+
+            int outputPlace = 0;
+            if(!root)
+            { 
+                int x = -1;
+                while (outputPlace == 0)
+                {
+                    if(!tempResult.Contains(x))
+                    {
+                        outputPlace = x;
+                    }
+                    else
+                    {
+                        x--;
+                    }
+                }
+            }
+
+            tempResult.Add(outputPlace);
+
+
             result.Add(locationOne);
             result.Add(functionValue);
             result.Add(locationTwo);
