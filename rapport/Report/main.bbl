@@ -1,0 +1,12 @@
+\begin{thebibliography}{1}
+
+\bibitem{FuncalcHome}
+IT~University of~Copenhagen.
+\newblock Corecalc and funcalc spreadsheet technology in c sharp.
+\newblock \url{http://www.itu.dk/people/sestoft/funcalc/}.
+
+\bibitem{Microbenchmarks}
+Peter~Sestoft (sestoft@itu.dk).
+\newblock Microbenchmarks in java and c sharp, 9 2015.
+
+\end{thebibliography}

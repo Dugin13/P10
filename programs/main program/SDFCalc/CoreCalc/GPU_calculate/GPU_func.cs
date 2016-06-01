@@ -15,6 +15,7 @@ namespace Corecalc
         private GPGPU gpu;
         private GPGPUProperties GPU_prop;
         private List<int> tempResult;
+        
         public GPU_func()
         {
             km = CudafyTranslator.Cudafy();
@@ -23,36 +24,6 @@ namespace Corecalc
             gpu.LoadModule(km);
 
             GPU_prop = gpu.GetDeviceProperties();
-        }
-
-
-        // there should be not need for this function
-        public int[,] FuncOptimizer(int[,] input)
-        {
-            int length = input.GetLength(0);
-
-            List<int> usedTempresult = new List<int>();
-
-
-            for (int i = 0; i < length; i++)
-            {
-                if (!usedTempresult.Contains(input[i, 3]))
-                {
-                    usedTempresult.Add(input[i, 3]);
-                }
-                if (usedTempresult.Contains(input[i, 0]))
-                {
-
-                }
-                if (usedTempresult.Contains(input[i, 2]))
-                {
-
-                }
-            }
-
-
-
-            return null;
         }
         
         public int[,] makeFunc(FunCall input)
@@ -216,10 +187,9 @@ namespace Corecalc
         public double[] calculate(double[,] input, int[,] func)
         {
             int numberOfTempResult = findnumberOfTempResult(func);
-            int SizeOfInput = input.GetLength(0);
-            int AmountOfNumbers = input.GetLength(1);
+            int SizeOfInput = input.GetLength(1);
+            int AmountOfNumbers = input.GetLength(0);
             int numberOfFunctions = func.GetLength(0);
-
 
             double[] output = new double[AmountOfNumbers];
             double[,] tempResult = makeEmtyTempResult(AmountOfNumbers, numberOfTempResult);
@@ -249,10 +219,8 @@ namespace Corecalc
             // copy the arrays to GPU
             gpu.CopyToDevice(input, GPU_input);
             gpu.CopyToDevice(func, GPU_func);
-            gpu.CopyToDevice(tempResult, GPU_tempResult);
+            //gpu.CopyToDevice(tempResult, GPU_tempResult);
 
-            // launch add on N threads
-            
             // had to add Microsoft.CSharp.dll references for this to work ?
             gpu.Launch(threadsPerBlock, blocksPerGrid).GPUFunc(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
             
@@ -283,7 +251,7 @@ namespace Corecalc
                     if (GPU_func[x, 0] > 0)
                     {
                         int temp_index = GPU_func[x, 0] - 1;
-                        input_1 = GPU_input[temp_index, i];
+                        input_1 = GPU_input[i, temp_index];
                     }
                     else
                     {
@@ -294,7 +262,7 @@ namespace Corecalc
                     if (GPU_func[x, 2] > 0)
                     {
                         int temp_index = GPU_func[x, 2] - 1;
-                        input_2 = GPU_input[temp_index, i];
+                        input_2 = GPU_input[i, temp_index];
                     }
                     else
                     {

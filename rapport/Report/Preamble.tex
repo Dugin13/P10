@@ -1,0 +1,95 @@
+%\documentclass[openany,12pt,a4page]{memoir}
+%
+% Packages
+%
+
+\usepackage[utf8]{inputenc}
+%\linespread{1.25}\usepackage{listings}
+\usepackage{mathptmx}
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{shcomment}{rgb}{0.12, 0.38, 0.18 } %adjusted, in Eclipse: {0.25, 0.42, 0.30 } = #3F6A4D
+\definecolor{shkeyword}{rgb}{0.37, 0.08, 0.25}  % #5F1441
+\definecolor{shstring}{rgb}{0.06, 0.10, 0.98} % #101AF9
+ \lstset{ % http://stackoverflow.com/questions/741985/latex-source-code-listing-like-in-professional-books
+%         basicstyle=\footnotesize\ttfamily,% the size of the fonts
+                                % that are used for the code
+        basicstyle=\footnotesize\ttfamily,% the size of the fonts that are used for the code
+         numbers=left,                     % where to put the line-numbers
+         numberstyle=\tiny,                % the size of the fonts that are used for the line-numbers
+         stepnumber=1,                     % line numbering steps
+         numbersep=5pt,                    % how far the line-numbers are from the code
+         tabsize=2,                        % sets default tabsize to 2 spaces
+         breaklines=true,                  % sets automatic line breaking
+         keywordstyle=\color{shkeyword},        % language function text color
+    		frame=b,
+ %        keywordstyle=[1]\textbf,    % Stil der Keywords
+ %        keywordstyle=[2]\textbf,    %
+ %        keywordstyle=[3]\textbf,    %
+ %        keywordstyle=[4]\textbf,   \sqrt{\sqrt{}} %
+         stringstyle=\color{shstring}, % string text color
+%         stringstyle=\color{red},
+        commentstyle=\color{shcomment},
+         showspaces=false,           % show spaces adding particular underscores
+         showtabs=false,             % show tabs within strings adding particular underscores   
+         showstringspaces=false,     % underline spaces within strings
+         xleftmargin=17pt,
+         framexleftmargin=17pt,
+         framexrightmargin=5pt,
+         framexbottommargin=4pt,
+         language=C
+ }
+\usepackage{caption}
+\lstdefinelanguage{Harlan}
+{morekeywords={,define,kernel,println,iota,let,main,module,}
+sensitive=false,
+morecomment=[l]{;},
+morecomment=[s]{/*}{*/},
+morestring=[b]",
+}
+
+\lstdefinelanguage{FSharp}
+{morekeywords={,let,float,main,entrypoint,for,parallel,fun,array,printfn,brahma,member,this,module,in,if,else,do,float,try,with,ex,failwith,}
+sensitive=false,
+morecomment=[l]{//},
+morecomment=[s]{(*}{*)},
+morestring=[b]",}
+
+\usepackage{tikz}
+\usepackage{pgfplotstable}
+\usepackage{pgfplots}
+
+%\usepackage{subcaption}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox[cmyk]{0.43, 0.35, 0.35,0.01}{\parbox{\textwidth}{\hspace{15pt}#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize}}
+
+%% NEW ABOVE Paper Standard Below
+\usepackage{enumerate}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[T1]{fontenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage{tikz} 
+\usepackage{tikz}
+\usepackage{amstext}
+\usepackage[lofdepth]{subfig}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{hyperref}
+%\usepackage{url}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage[section]{placeins}
+\usepackage[export]{adjustbox}% http://ctan.org/pkg/adjustbox
+%\input{macros.tex}
+
+\pagestyle{plain}
+\usepackage{array}
+\usepackage{wrapfig}
+\usepackage{lscape}
+\usepackage{rotating}
+\usepackage{epstopdf}

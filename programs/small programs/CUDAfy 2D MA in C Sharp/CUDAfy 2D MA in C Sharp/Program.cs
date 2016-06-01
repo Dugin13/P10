@@ -12,37 +12,61 @@ namespace CUDAfy_2D_MA_in_C_Sharp
 {
     class Program
     {
-        private static int Size = 1000;
-        private static int Size1d = Size * Size;
-        private static int n = 5;
-        private static int count = 100;
 
         static void Main(string[] args)
         {
-            int[,] A = new int[Size, Size];
-            int[,] B = new int[Size, Size];
-            int[,] C = new int[Size, Size];
+            int[] testSize = new int[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+            double[,] result = new double[testSize.Length, 3];
+            int i, n = 10, count = 100;
 
-            for (int x = 0; x < Size; x++)
+            for (i = 0; i < testSize.Length; i++)
             {
-                for (int y = 0; y < Size; y++)
+                int Size = testSize[i];
+                int Size1d = Size * Size;
+                int[,] A = new int[Size, Size];
+                int[,] B = new int[Size, Size];
+                int[,] C = new int[Size, Size];
+
+                for (int x = 0; x < Size; x++)
                 {
-                    A[x, y] = 2;
-                    B[x, y] = 3;
-                    C[x, y] = 0;
-                    //Console.WriteLine("(x,y): (" + x + "," + y + ")" + "  A: " + A[x, y] + "   B: " + B[x, y] + "   C: " + C[x, y]);
+                    for (int y = 0; y < Size; y++)
+                    {
+                        A[x, y] = 2;
+                        B[x, y] = 3;
+                        C[x, y] = 0;
+                        //Console.WriteLine("(x,y): (" + x + "," + y + ")" + "  A: " + A[x, y] + "   B: " + B[x, y] + "   C: " + C[x, y]);
+                    }
                 }
+                Console.WriteLine(testSize[i] + " starting");
+                double[] Mark4_time = Mark4(A, B, C, Size, Size1d, n, count);
+                result[i, 0] = testSize[i];
+                result[i, 1] = Mark4_time[0];
+                result[i, 2] = Mark4_time[1];
             }
-            Console.WriteLine("start testing");
-
-
-            double[] time = Mark3(A, B, C);
-
             Console.WriteLine("finis testing");
-            Console.ReadLine();
+            string lines = "CUDAfy 2D MA in C Sharp  mean  , sdev \r\n";
+            for (i = 0; i < testSize.Length; i++)
+            {
+                lines = lines + "size: " + result[i, 0] + " time: " + result[i, 1] + " " + result[i, 2] + "\r\n";
+            }
+
+            // Write the string to a file.
+            string path = @"c:\result\CUDAfy_2D_MA_in_C_Sharp.txt";
+            System.IO.StreamWriter file;
+            if (!System.IO.File.Exists(path))
+            {
+                file = System.IO.File.CreateText(path);
+
+            }
+            else
+            {
+                file = new System.IO.StreamWriter(path);
+            }
+            file.WriteLine(lines);
+            file.Close();
         }
 
-        public static double[] Mark3(int[,] A, int[,] B, int[,] C)
+        public static double[] Mark3(int[,] A, int[,] B, int[,] C, int Size, int Size1d, int n, int count)
         {
             double[] result = new double[n];
             double dummy = 0.0;
@@ -59,7 +83,7 @@ namespace CUDAfy_2D_MA_in_C_Sharp
                 Timer t = new Timer();
                 for (int i = 0; i < count; i++)
                 {
-                    dummy += MA(A, B, C, gpu, maxTheadBlockSize);
+                    dummy += MA(A, B, C, gpu, maxTheadBlockSize,Size);
                 }
                 double time = t.Check() / count;
                 result[j] = time;
@@ -68,7 +92,34 @@ namespace CUDAfy_2D_MA_in_C_Sharp
             return result;
         }
 
-        public static int MA(int[,] A, int[,] B, int[,] C, GPGPU gpu, int maxTheadBlockSize)
+        public static double[] Mark4(int[,] A, int[,] B, int[,] C, int Size, int Size1d, int n, int count)
+        {
+            double dummy = 0.0;
+            double st = 0.0, sst = 0.0;
+
+            CudafyModule km = CudafyTranslator.Cudafy();
+
+            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            gpu.LoadModule(km);
+
+            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            int maxTheadBlockSize = (int)Math.Sqrt(GPU_prop.MaxThreadsPerBlock);
+
+            for (int j = 0; j < n; j++)
+            {
+                Timer t = new Timer();
+                for (int i = 0; i < count; i++)
+                    dummy += MA(A, B, C, gpu, maxTheadBlockSize, Size);
+                double time = t.Check() / count;
+                st += time;
+                sst += time * time;
+            }
+            double mean = st / n, sdev = Math.Sqrt((sst - mean * mean * n) / (n - 1));
+            return new double[2] { mean, sdev };
+        }
+
+
+        public static int MA(int[,] A, int[,] B, int[,] C, GPGPU gpu, int maxTheadBlockSize, int Size)
         {
             // allocate the memory on the GPU
             int[,] GPU_A = gpu.Allocate<int>(A);
@@ -79,7 +130,7 @@ namespace CUDAfy_2D_MA_in_C_Sharp
             gpu.CopyToDevice(A, GPU_A);
             gpu.CopyToDevice(B, GPU_B);
             dim3 threadsPerBlock;
-            // launch GPU_MA
+            // find the number of threads and blocks
             if (Size < maxTheadBlockSize)
             {
                 threadsPerBlock = new dim3(Size, Size);
@@ -90,7 +141,7 @@ namespace CUDAfy_2D_MA_in_C_Sharp
             }
             dim3 block = new dim3(Size, Size);
 
-
+            // launch GPU_MA
             gpu.Launch(block, threadsPerBlock, "GPU_MA", GPU_A, GPU_B, GPU_C, Size);
 
             // copy the array 'c' back from the GPU to the CPU

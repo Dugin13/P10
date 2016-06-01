@@ -26,20 +26,6 @@ namespace CUDAfy_Progamming_Test
             GPU_prop = gpu.GetDeviceProperties();
         }
 
-        private static double[,] makeEmtyTempResult(int AmountOfNumbers, int numberOfTempResult)
-        {
-            double[,] temp = new double[AmountOfNumbers, numberOfTempResult];
-            for (int i = 0; i < AmountOfNumbers; i++)
-            {
-                for (int x = 0; x < numberOfTempResult; x++)
-                {
-                    temp[i, x] = 0;
-                }
-            }
-            return temp;
-
-        }
-
         private static int findnumberOfTempResult(int[,] func)
         {
             int number = 0;
@@ -68,7 +54,7 @@ namespace CUDAfy_Progamming_Test
             
             
             double[] output = new double[AmountOfNumbers];
-            double[,] tempResult = makeEmtyTempResult(AmountOfNumbers, numberOfTempResult);
+            double[,] tempResult = new double[AmountOfNumbers, numberOfTempResult];
 
             int threadsPerBlock = 0;
             int blocksPerGrid = 0;
@@ -95,10 +81,10 @@ namespace CUDAfy_Progamming_Test
             // copy the arrays to GPU
             gpu.CopyToDevice(input, GPU_input);
             gpu.CopyToDevice(func, GPU_func);
-            gpu.CopyToDevice(tempResult, GPU_tempResult);
+            //gpu.CopyToDevice(tempResult, GPU_tempResult);
 
             // launch add on N threads
-            gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_func(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
+            gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_Func(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
 
             // copy the array 'c' back from the GPU to the CPU
             gpu.CopyFromDevice(GPU_output, output);
@@ -114,9 +100,10 @@ namespace CUDAfy_Progamming_Test
         }
 
         [Cudafy]
-        private static void GPU_func(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
+        private static void GPU_Func(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
         {
             int i = thread.threadIdx.x + thread.blockDim.x * thread.blockIdx.x;
+            
             if (i < AmountOfNumbers)
             {
                 for (int x = 0; x < number_Of_Functions; x++)

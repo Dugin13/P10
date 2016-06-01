@@ -62,7 +62,27 @@ double* Mark3_Normal(int* A, int* B, int* C)
 	}
 	return result;
 }
-#pragma region Mark
+
+double* Mark4_Normal(int* A, int* B, int* C)
+{
+
+	double dummy = 0.0;
+	double st = 0.0, sst = 0.0;
+	for (int j = 0; j<n; j++) {
+		clock_t t; // not sure if it is in right format
+		t = clock();
+		for (int i = 0; i<count; i++)
+			dummy += MA_Normal(A, B, C, Size, Size1d);
+		t = clock() - t;
+		double time = ((double)t / CLOCKS_PER_SEC)*MINI_SEC_IN_SEC;
+		st += time;
+		sst += time * time;
+	}
+	double mean = st / n, sdev = sqrt((sst - mean*mean*n) / (n - 1));
+	double result[2] = { mean, sdev };
+	return result;
+}
+
 double* Mark3_1D(int* A, int* B, int* C)
 {
 	double result[n];
@@ -79,6 +99,26 @@ double* Mark3_1D(int* A, int* B, int* C)
 		result[j] = time;
 		std::cout << "time: " << time << " ms" << std::endl;
 	}
+	return result;
+}
+
+double* Mark4_1D(int* A, int* B, int* C)
+{
+
+	double dummy = 0.0;
+	double st = 0.0, sst = 0.0;
+	for (int j = 0; j<n; j++) {
+		clock_t t; // not sure if it is in right format
+		t = clock();
+		for (int i = 0; i<count; i++)
+			dummy += MA_1D_Version(A, B, C, Size, Size1d);
+		t = clock() - t;
+		double time = ((double)t / CLOCKS_PER_SEC)*MINI_SEC_IN_SEC;
+		st += time;
+		sst += time * time;
+	}
+	double mean = st / n, sdev = sqrt((sst - mean*mean*n) / (n - 1));
+	double result[2] = { mean, sdev };
 	return result;
 }
 #pragma endregion

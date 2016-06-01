@@ -5,10 +5,10 @@
 #include <iostream>
 #include <amp.h>
 
-const int Size = 3;
+const int Size = 5;
 const int Size1d = Size*Size;
 const int n = 10;
-const int count = 10000;
+const int count = 100;;
 const int MINI_SEC_IN_SEC = 1000;
 
 
@@ -55,12 +55,33 @@ double* Mark3(int A[][Size], int B[][Size], int C[][Size])
 			dummy += MA(A, B, C, Size, Size1d);
 		}
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC)*MINI_SEC_IN_SEC;
+		double time = ((double)t / CLOCKS_PER_SEC);
 		result[j] = time;
 		std::cout << "time: " << time << " ms" << std::endl;
 	}
 	return result;
 }
+
+double* Mark4(int A[][Size], int B[][Size], int C[][Size])
+{
+
+	double dummy = 0.0;
+	double st = 0.0, sst = 0.0;
+	for (int j = 0; j<n; j++) {
+		clock_t t; // not sure if it is in right format
+		t = clock();
+		for (int i = 0; i<count; i++)
+			dummy += MA(A, B, C, Size, Size1d);
+		t = clock() - t;
+		double time = ((double)t / CLOCKS_PER_SEC);
+		st += time;
+		sst += time * time;
+	}
+	double mean = st / n, sdev = sqrt((sst - mean*mean*n) / (n - 1));
+	double result[2] = { mean, sdev };
+	return result;
+}
+
 #pragma endregion
 
 
@@ -112,16 +133,11 @@ int _tmain(int argc, _TCHAR* argv[])
 #pragma endregion
 
 
-	double* result = Mark3(A, B, C);
+	double* result = Mark4(A, B, C);
+	double result1 = result[0];
+	double result2 = result[1];
 
-
-	for (unsigned int i = 0; i < Size; i++)
-	{
-		for (unsigned int x = 0; x < Size; x++)
-		{
-			std::cout << "A: " << A[i][x] << "	B: " << B[i][x] << "	c: " << C[i][x] << std::endl;
-		}
-	}
+	
 	int STOP = 0;
 	return 0;
 }

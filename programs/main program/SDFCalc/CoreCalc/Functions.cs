@@ -828,7 +828,7 @@ namespace Corecalc {
     // Populate table of functions.  Corresponding data for sheet-defined 
     // functions are in FunctionInfo.functions and in a CGComposite switch.
     static Function() {
-        GPU = new GPU_func();   // TODO
+        GPU = new GPU_func();   // make a instance of GPU, thereby getting GPU infomation
       table = new Dictionary<String, Function>();
       // <fun> : unit -> number
       new Function("NOW", MakeNumberFunction(ExcelNow),
@@ -1085,9 +1085,6 @@ namespace Corecalc {
               if (es.Length == 2)
               {
                   Value v0 = es[0].Eval(sheet, col, row);
-   
-                  //Value v1 = es[1].Eval(sheet, col, row); tror ikke der er nøvending at gøre dette
-
                   
                   if (v0 is ErrorValue) return v0;
                   ArrayValue v0arr = v0 as ArrayValue;
@@ -1096,24 +1093,13 @@ namespace Corecalc {
 
                       int rows = v0arr.Rows;
                       double[,] input = ArrayValue.ToDoubleArray2D(v0arr);
-
-                      double[,] GPU_input = new double[input.GetLength(1), input.GetLength(0)];
-                      for (int j = 0; j < input.GetLength(1); j++)
-                          for (int r = 0; r < input.GetLength(0); r++)
-                              GPU_input[j, r] = input[r, j];
-
                       int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall);
-                      double[] output = GPU.calculate(GPU_input, function);
+                      double[] output = GPU.calculate(input, function);
 
                       Value[,] result = new Value[1, rows];
 
                       for (int r = 0; r < rows; r++)
                           result[0,r] = NumberValue.Make(output[r]);
-                      
-                      //for (int c = 0; c < cols; c++)
-                      //    for (int r = 0; r < rows; r++)
-                      //        result[r, c] = NumberValue.Make(42 + Value.ToDoubleOrNan(es[1].Eval(sheet, col, row)));
-
 
                       return new ArrayExplicit(result);
                   }

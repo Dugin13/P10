@@ -52,7 +52,7 @@ namespace CUDAfy_Progamming_Test
         {
             bacisrun();
 
-
+            classrun();
         }
         static void bacisrun()
         {
@@ -124,6 +124,32 @@ namespace CUDAfy_Progamming_Test
             gpu.Free(GPU_func);
         }
 
+        static void classrun()
+        {
+            int SizeOfInput = 4;
+            int AmountOfNumbers = 10;
+            int numberOfTempResult = 2; // must not be zero even know there is no temp result!!! 
+
+            double[,] input = new double[SizeOfInput, AmountOfNumbers];
+            double[] output = new double[AmountOfNumbers];
+            double[,] tempResult = makeEmtyTempResult(AmountOfNumbers, numberOfTempResult);
+
+            int[,] func = makeTestFunc();
+
+            int numberOfFunctions = func.GetLength(0);
+
+            for (int i = 0; i < SizeOfInput; i++)
+            {
+                for (int x = 0; x < AmountOfNumbers; x++)
+                {
+                    input[i, x] = i + 2;
+                }
+            }
+
+            GPU_func GPU = new GPU_func();
+
+            GPU.calculate(input, func);
+        }
 
 
 

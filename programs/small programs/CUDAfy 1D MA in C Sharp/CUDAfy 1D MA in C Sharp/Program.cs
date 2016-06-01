@@ -14,33 +14,56 @@ namespace CUDAfy_1D_MA_in_C_Sharp
     {
         static void Main(string[] args)
         {
-            const int Size = 1000;
-            const int Size1d = Size * Size;
-            int[] A = new int[Size1d];
-            int[] B = new int[Size1d];
-            int[] C = new int[Size1d];
-            int i, n = 5, count = 100;
-
-            double[] time;
+            int[] testSize = new int[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+            double[,] result = new double[testSize.Length, 3];
+            int i, n = 10, count = 100;
 
 
-            for (i = 0; i < Size1d; i++)
+
+            
+            Console.WriteLine("starting--------------------------------------------------------------------::");
+
+
+
+            for (i = 0; i < testSize.Length; i++)
             {
-                A[i] = 2;
-                B[i] = 3;
-                C[i] = 0;
-                //Console.WriteLine("i: " + i + "  A: " + A[i] + "   B: " + B[i] + "   C: " + C[i]);
+                int Size = testSize[i];
+                int Size1d = Size * Size;
+                int[] A = new int[Size1d];
+                int[] B = new int[Size1d];
+                int[] C = new int[Size1d];
+                for (int x = 0; x < (Size1d); x++)
+                {
+                    A[x] = 2;
+                    B[x] = 3;
+                }
+                Console.WriteLine(testSize[i] + " starting");
+                double[] Mark4_time = Mark4(A, B, C, Size, Size1d, n, count);
+                result[i, 0] = testSize[i];
+                result[i, 1] = Mark4_time[0];
+                result[i, 2] = Mark4_time[1];
             }
-            Console.WriteLine("--------------------------------------------------------------------::");
-            time = Mark3(A, B, C, Size, Size1d, n, count);
 
-            Console.WriteLine("--------------------------------------------------------------------::");
-            for (i = 0; i < Size1d; i++)
+            string lines = "CUDAfy 1D MA in C Sharp  mean  , sdev \r\n";
+            for (i = 0; i < testSize.Length; i++)
             {
-                //Console.WriteLine("i: " + i + "  A: " + A[i] + "   B: " + B[i] + "   C: " + C[i]);
+                lines = lines + "size: " + result[i, 0] + " time: " + result[i, 1] + " " + result[i, 2] + "\r\n";
             }
 
-            Console.ReadLine();
+            // Write the string to a file.
+            string path = @"c:\result\CUDAfy_1D_MA_in_C_Sharp.txt";
+            System.IO.StreamWriter file;
+            if (!System.IO.File.Exists(path))
+            {
+                file = System.IO.File.CreateText(path);
+
+            }
+            else
+            {
+                file = new System.IO.StreamWriter(path);
+            }
+            file.WriteLine(lines);
+            file.Close();
 
 
         }
@@ -54,19 +77,7 @@ namespace CUDAfy_1D_MA_in_C_Sharp
             gpu.LoadModule(km);
 
             GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
-            int threadsPerBlock = 0;
-	        int blocksPerGrid = 0;
-
-	        if (Size1d< GPU_prop.MaxThreadsPerBlock)
-	        {
-		        threadsPerBlock = Size1d;
-		        blocksPerGrid = 1;
-	        }
-	        else
-	        {
-		        threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
-		        blocksPerGrid = (Size1d/GPU_prop.MaxThreadsPerBlock)+1;
-	        }
+            int max_threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
 
 
             for (int j = 0; j < n; j++)
@@ -74,16 +85,41 @@ namespace CUDAfy_1D_MA_in_C_Sharp
                 Timer t = new Timer();
                 for (int i = 0; i < count; i++)
                 {
-                    dummy += MA(A, B, C, Size, Size1d, gpu, threadsPerBlock, blocksPerGrid);
+                    dummy += MA(A, B, C, Size, Size1d, gpu, max_threadsPerBlock);
                 }
                 double time = t.Check() / count;
                 result[j] = time;
-                Console.WriteLine("time: " + time + " ms");
             }
             return result;
         }
 
-        public static int MA(int[] A, int[] B, int[] C, int Size, int Size1d, GPGPU gpu, int threadsPerBlock, int blocksPerGrid)
+        public static double[] Mark4(int[] A, int[] B, int[] C, int Size, int Size1d, int n, int count)
+        {
+            double dummy = 0.0;
+            double st = 0.0, sst = 0.0;
+
+            CudafyModule km = CudafyTranslator.Cudafy();
+
+            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            gpu.LoadModule(km);
+
+            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            int max_threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
+
+            for (int j = 0; j < n; j++)
+            {
+                Timer t = new Timer();
+                for (int i = 0; i < count; i++)
+                    dummy += MA(A, B, C, Size, Size1d, gpu, max_threadsPerBlock);
+                double time = t.Check() / count;
+                st += time;
+                sst += time * time;
+            }
+            double mean = st / n, sdev = Math.Sqrt((sst - mean * mean * n) / (n - 1));
+            return new double[2] { mean, sdev };
+        }
+
+        public static int MA(int[] A, int[] B, int[] C, int Size, int Size1d, GPGPU gpu, int max_threadsPerBlock)
         {
             // allocate the memory on the GPU
             int[] GPU_A = gpu.Allocate<int>(A);
@@ -93,6 +129,20 @@ namespace CUDAfy_1D_MA_in_C_Sharp
             // copy the arrays 'a' and 'b' to the GPU
             gpu.CopyToDevice(A, GPU_A);
             gpu.CopyToDevice(B, GPU_B);
+
+            int threadsPerBlock = 0;
+            int blocksPerGrid = 0;
+
+            if (Size1d < max_threadsPerBlock)
+            {
+                threadsPerBlock = Size1d;
+                blocksPerGrid = 1;
+            }
+            else
+            {
+                threadsPerBlock = max_threadsPerBlock;
+                blocksPerGrid = (Size1d / max_threadsPerBlock) + 1;
+            }
 
             // launch add on N threads
             gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_MA(GPU_A, GPU_B, GPU_C, Size, Size1d);

@@ -1,0 +1,17 @@
+%Funcalc og GPU
+For at kunne gøre brug GPU'en processer kræft for Funcalc, skal man først finde en måde at enten kalde eller lave GPU kode til C#, en af måderne der er blevet fundet er at lave C++ koden som en ddl til C# projektet (skal lige havde undersøgt hvad der rigtig sker).
+
+
+
+
+
+for at kunne udregne funktionerne der bliver lavet i regnearket på runtime er det blevet lavet en lambda udtryk der tager
+flere to dimensioner array's:
+et der vil indeholde infomation fra kolonnerne med input til funktionen.
+et der vil indeholde resultater for mellem regninger der bliver gjort på GPU
+et der vil indeholde en fremgangs måde på hvordan hvordan man regner funktion der er givet på regnearket 
+Et 1 dimension array, der vil indeholde resultatet fra funktionen.
+
+måden lambda udtrykket virker på er at 
+
+

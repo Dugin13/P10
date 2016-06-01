@@ -1,0 +1,24 @@
+\section{Test af Matrix Multiplatikon}
+For at give en bedre indblik på hvor meget speed-up det giver at bruge GPU'en i forhold til CPU'en, er der fremstillet simpel programmer der går en matrix multikapion. Der er lavet to versioner for hver GPU library, der er blevet kigget på. Forskellen mellem versionerne er, at det ene gør brug af en dimension og den anden bruger to dimensioner for array. De library der er blevet tested er C++ AMP, CUDA, for C++ og C\# med normal CPU udregning er også lavet for kunne give en grundlag for hvor meget speed-up man for.
+
+Testene bliver gjort for at give et bedre indblik om GPU er bedre en CPU, der er nogen forskel på hvordan input til GPU ser ud i forhold til om speed-up. Derefter er der blevet lavet et test program med C++ AMP der bliver kaldt fra C\# kode, for at se hvordan dette kunne gøres og om det har den store effekt på udregnings tid med at bruge denne metode der er blevet fundet. Dette bliver gjort for fordi programmet Funcalc er skrevet i C\#.
+
+Testene er blevet fremstillet efter papiret (Microbenchmarks in Java and C\#). Af de versioner af test papiret beskriver bruges der Mark3 version.
+
+% fandt en fejl når man kalder GPU funktion flere gange result gik fra 18 til 21 hvis man ikke ikke gør (=0) først. efter 3 gange sketede det vist,
+
+\subsection{Resultater}
+\subsubsection{CPU}
+\subsubsection{CUDA}
+\subsubsection{CUDAfy}
+\subsubsection{C++ AMP}
+\subsubsection{C++ AMP og C\#}
+
+\subsection{Efter Tanker}
+Det største problem jeg har haft med med CUDA og CUDAfy er, at man selv skal finde ud af hvor mange blokke og antal tråde pr. blok. Hvilket godt kan give nogen problemer når man arbejder med et program der skal arbejde med varierende input. Efter hvad jeg ar fundet på nettet angående problem med hvor mange blokke og antal tråde pr. blok man skal bruge har jeg for det meste fundet at man skal teste sig frem alt efter hvad der virker godt på det hardware man tester på.
+
+For at løse dette problem for mig, har jeg lavet en generist metode der finder ud af hvor mange blokke der skal bruges, hvis det hele ikke kan gøres på en blok, denne metode er dog ikke perfekt.
+
+En anden ting jeg er kommet på er plads mangle på GPU'en, min GPU kunne kun klare at gange matrixer der har max størrelse på ???. En løsning på dette problem kunne være at begynde at bruge billede hukommelse på GPU'en til readonly data. Hvilke skulle være muligt med CUDA og skulle ikke være muligt med CUDAfy.
+
+En mindre fejl der begyndte at vise sig var at, når men kalder GPU funktion flere gange blev resultatet plusse med 3 hvis man ikke først sætter det til 0 inden man udregner. Denne fejl begundte at vise sig efter 3 udringer efter hinanden.

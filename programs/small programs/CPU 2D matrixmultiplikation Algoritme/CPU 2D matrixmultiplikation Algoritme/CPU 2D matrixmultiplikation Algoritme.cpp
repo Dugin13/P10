@@ -46,6 +46,27 @@ double* Mark3(int A[][Size], int B[][Size], int C[][Size])
 	}
 	return result;
 }
+
+double* Mark4(int A[][Size], int B[][Size], int C[][Size])
+{
+
+	double dummy = 0.0;
+	double st = 0.0, sst = 0.0;
+	for (int j = 0; j<n; j++) {
+		clock_t t; // not sure if it is in right format
+		t = clock();
+		for (int i = 0; i<count; i++)
+			dummy += MA(A, B, C, Size, Size1d);
+		t = clock() - t;
+		double time = ((double)t / CLOCKS_PER_SEC)*MINI_SEC_IN_SEC;
+		st += time;
+		sst += time * time;
+	}
+	double mean = st / n, sdev = sqrt((sst - mean*mean*n) / (n - 1));
+	double result[2] = { mean, sdev };
+	return result;
+}
+
 #pragma endregion
 
 

@@ -4,10 +4,9 @@
 #include <iostream>
 #include <amp.h>
 #include <time.h>
-const int Size = 3;
-const int Size1d = Size*Size;
-const int n = 10;
-const int count = 10000;
+#include <math.h>
+#include <fstream> 
+
 const int MINI_SEC_IN_SEC = 1000;
 #pragma region parallel_for_each restrict amp
 int MA(int* A, int* B, int* C, int Size, int Size1d)
@@ -37,9 +36,9 @@ int MA(int* A, int* B, int* C, int Size, int Size1d)
 #pragma endregion
 
 #pragma region Mark
-double* Mark3(int* A, int* B, int* C)
+double* Mark3(int* A, int* B, int* C, int Size, int Size1d, int n, int count)
 {
-	double result[n];
+	double* result = new double[n];
 	double dummy = 0.0;
 	for (int j = 0; j<n; j++) {
 		clock_t t; // not sure if it is in right format
@@ -49,29 +48,62 @@ double* Mark3(int* A, int* B, int* C)
 			dummy += MA(A, B, C, Size, Size1d);
 		}
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC)*MINI_SEC_IN_SEC;
+		double time = ((double)t / CLOCKS_PER_SEC);
 		result[j] = time;
 		std::cout << "time: " << time << " ms" << std::endl;
 	}
 	return result;
 }
+
+double* Mark4(int* A, int* B, int* C,int Size,int Size1d,int n,int count)
+{
+	
+	double dummy = 0.0;
+	double st = 0.0, sst = 0.0;
+	for (int j = 0; j<n; j++) {
+		clock_t t; // not sure if it is in right format
+		t = clock();
+		for (int i = 0; i<count; i++)
+			dummy += MA(A, B, C, Size, Size1d);
+		t = clock() - t;
+		double time = ((double)t / CLOCKS_PER_SEC);
+		st += time;
+		sst += time * time;
+	}
+	double mean = st / n, sdev = sqrt((sst - mean*mean*n) / (n - 1));
+	double result[2] = { mean, sdev };
+	return result;
+}
+
+
 #pragma endregion
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int A[Size1d];
-	int B[Size1d];
-	int C[Size1d];
-	int i, x, y, z;
+	const int testSize[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+	double result[(sizeof(testSize) / sizeof(*testSize))][3];
+	int i, n = 10, count = 100;
 
-	for (int i = 0; i < Size1d; i++)
+	for (int i = 0; i < (sizeof(testSize) / sizeof(*testSize)); i++)
 	{
-		A[i] = 2;
-		B[i] = 3;
-		C[i] = 0;
-		std::cout << A[i] << " " << B[i] << std::endl;
+		int Size = testSize[i];
+		int Size1d = Size * Size;
+		int* A = new int[Size1d];
+		int* B = new int[Size1d];
+		int* C = new int[Size1d];
+		for (int x = 0; x < Size1d; x++)
+		{
+			A[x] = 2;
+			B[x] = 3;
+		}
+		std::cout << testSize[i]<< " starting" << std::endl;
+		double* Mark4_time = Mark4(A, B, C, Size, Size1d, n, count);
+		result[i][0] = Size;
+		result[i][1] = Mark4_time[0];
+		result[i][2] = Mark4_time[1];
 	}
+
 
 #pragma region parallel_for restrict cpu
 
@@ -116,13 +148,17 @@ int _tmain(int argc, _TCHAR* argv[])
 
 #pragma endregion
 
+	std::ofstream outfile("AMP_1D_MA_in_C++.txt");
+	outfile << "AMP 1D MA in C++  mean, sdev" << std::endl;
 
-	double* result = Mark3(A, B, C);
-
-	for (int i = 0; i < Size1d; i++)
+	for (int i = 0; i < (sizeof(testSize) / sizeof(*testSize)); i++)
 	{
-		std::cout << "A: " << A[i] << "	B: " << B[i] << "	c: " << C[i] << std::endl;
+		outfile << "size: " << result[i][0] << " time: " << result[i][1] << " , " << result[i][2] << std::endl;
 	}
+
+
+	outfile.close();
+
 
 
 	int STOP = 0;
