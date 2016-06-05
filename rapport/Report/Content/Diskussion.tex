@@ -1,0 +1,6 @@
+\section{Diskussion}
+For at først at kigge på mulighederne for at kode til en GPU til C Sharp, som er det sprog Corecalc er skrevet i, er der blevet lavet nogen forskellige test der giver nogen interessante resultater. Vis man kigger på CUDAfy og CUDA, kan man se til at CUDA kan klare små matrixers, men af alle de forskelle måder jeg har testet til at kode til en GPU, virker det til at CUDA ikke kan klare større matrixers i forhold til hvordan CUDAfy klare sig. Dette problem kunne skylle at CUDAfy måske har en smule kode optimering, mens CUDA muligvis ikke nar nogen kode optimering. grunlaget for at jeg tror dette er sandet, er at koden er stort set den sammen i for alle matrix multiplikationer.
+
+En anden grund til at dette kunne passe er hukommelses brug af array. I CUDAfy er hukommelsen fast låst til en form for allokering af array. Hvorimod CUDA er meget åben i forhold til hvordan du vil bruge hukommelsen, i forhold til CUDAfy. Dette kunne med føre at allokering af array igennem CUDA ikke er meget optimeret, hvorimod at igennem CUDAfy er det bedre da man programøren ikke skal rode med det aspekt af kodning og er heller ikke rigtig kigge meget på, da der ikke er en god dokumentering.
+
+en overraskende ting kan ses i CUDAfy 1d og 2d kan det ses, at det er hurtigere at håndterer data i 1d i sted for 2d

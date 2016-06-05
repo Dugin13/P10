@@ -1,10 +1,10 @@
-﻿Build started 01-06-2016 23:24:01.
+﻿Build started 05-06-2016 17:04:27.
      1>Project "C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme.vcxproj" on node 2 (Build target(s)).
      1>AddCudaCompileDeps:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\cl.exe /E /nologo /showIncludes /TP /D__CUDACC__ /DWIN32 /D_DEBUG /D_CONSOLE /D_MBCS /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\bin" /I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include" /I. /FIcuda_runtime.h /c "C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme\kernel.cu" 
        CudaBuild:
          Compiling CUDA source file kernel.cu...
-         cmd.exe /C "C:\Users\Niels\AppData\Local\Temp\tmpfa645a73dde041cea0fd2657e02395a3.cmd"
+         cmd.exe /C "C:\Users\Niels\AppData\Local\Temp\tmp4ef6e16a96b14ae5b0160f94f73480f4.cmd"
          "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd " -o Debug\kernel.cu.obj "C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme\kernel.cu"
          
          C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\bin\nvcc.exe" -gencode=arch=compute_20,code=\"sm_20,compute_20\" --use-local-env --cl-version 2013 -ccbin "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin"  -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include" -I"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v7.5\include"  -G   --keep-dir Debug -maxrregcount=0  --machine 32 --compile -cudart static  -g   -DWIN32 -D_DEBUG -D_CONSOLE -D_MBCS -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd " -o Debug\kernel.cu.obj "C:\Users\Niels\Documents\uni ting\P10\P10\programs\small programs\CUDA 1D matrixmultiplikation Algoritme\CUDA 1D matrixmultiplikation Algoritme\kernel.cu" 
@@ -34,4 +34,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.11
+Time Elapsed 00:00:05.38

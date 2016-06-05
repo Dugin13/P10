@@ -5,7 +5,7 @@
 #include <iostream>
 #include <amp.h>
 
-const int Size = 5;
+const int Size = 300;
 const int Size1d = Size*Size;
 const int n = 10;
 const int count = 100;;
@@ -55,7 +55,7 @@ double* Mark3(int A[][Size], int B[][Size], int C[][Size])
 			dummy += MA(A, B, C, Size, Size1d);
 		}
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC);
+		double time = ((double)t / CLOCKS_PER_SEC) * 10;
 		result[j] = time;
 		std::cout << "time: " << time << " ms" << std::endl;
 	}
@@ -73,7 +73,7 @@ double* Mark4(int A[][Size], int B[][Size], int C[][Size])
 		for (int i = 0; i<count; i++)
 			dummy += MA(A, B, C, Size, Size1d);
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC);
+		double time = ((double)t / CLOCKS_PER_SEC) * 10;
 		st += time;
 		sst += time * time;
 	}
@@ -101,7 +101,6 @@ int _tmain(int argc, _TCHAR* argv[])
 			A[i][x] = 2;
 			B[i][x] = 3;
 			C[i][x] = 0;
-			std::cout << "A: " << A[i][x] << "	B: " << B[i][x] << "	c: " << C[i][x] << std::endl;
 		}
 	}
 

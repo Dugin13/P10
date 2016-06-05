@@ -69,6 +69,7 @@
     <Compile Include="Coco\Scanner.cs" />
     <Compile Include="Functions.cs" />
     <Compile Include="GPU_calculate\GPU_func.cs" />
+    <Compile Include="GPU_calculate\Timer.cs" />
     <Compile Include="GUI\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>

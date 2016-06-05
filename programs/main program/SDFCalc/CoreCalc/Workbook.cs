@@ -28,6 +28,7 @@ using System.Diagnostics;
 using SC = System.Collections;
 using System.Collections.Generic;
 using Corecalc.Funcalc;
+using CoreCalc.GPU_calculate;
 
 namespace Corecalc {
   /// <summary>
@@ -111,10 +112,37 @@ namespace Corecalc {
       awaitsEvaluation.Enqueue(new FullCellAddr(sheet, col, row));
     }
 
-    public long RecalculateFull() {
+    public long RecalculateFull() { // IMPORTENT: PLACE MARK 4 HERE
       CheckForModifiedSdf();
+      Mark4();
       return RecalculateFullAfterSdfCheck();
     }
+
+
+    // Mark4 is code made for testing
+    public void Mark4()
+    {
+        int n = 10, count = 100;
+        long dummy = 0;
+        double st = 0.0, sst = 0.0;
+
+        for (int j = 0; j < n; j++)
+        {
+            Timer t = new Timer();
+            for (int i = 0; i < count; i++)
+            dummy += RecalculateFullAfterSdfCheck();
+            double time = t.Check() / count;
+            st += time;
+            sst += time * time;
+        }
+        double mean = st / n;
+        double sdev = Math.Sqrt((sst - mean * mean * n) / (n - 1));
+
+        double STOP = mean + sdev;
+        
+    }
+
+
 
     // Unconditionally recalculate all cells a la Ctrl+Alt+F9
     public long RecalculateFullAfterSdfCheck() {

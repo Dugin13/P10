@@ -48,7 +48,7 @@ double* Mark3(int* A, int* B, int* C, int Size, int Size1d, int n, int count)
 			dummy += MA(A, B, C, Size, Size1d);
 		}
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC);
+		double time = ((double)t / CLOCKS_PER_SEC) * 10;
 		result[j] = time;
 		std::cout << "time: " << time << " ms" << std::endl;
 	}
@@ -66,7 +66,7 @@ double* Mark4(int* A, int* B, int* C,int Size,int Size1d,int n,int count)
 		for (int i = 0; i<count; i++)
 			dummy += MA(A, B, C, Size, Size1d);
 		t = clock() - t;
-		double time = ((double)t / CLOCKS_PER_SEC);
+		double time = ((double)t / CLOCKS_PER_SEC)*10;
 		st += time;
 		sst += time * time;
 	}

@@ -9,10 +9,106 @@ Testene er blevet fremstillet efter papiret (Microbenchmarks in Java and C\#). A
 
 \subsection{Resultater}
 \subsubsection{CPU}
+ikke lavet i nu
 \subsubsection{CUDA}
+CUDA 1D MA in C++  mean, sdev \newline
+size: 5 time: 0.542 , 0.242 \newline
+size: 10 time: 0.477 , 0.014 \newline
+size: 20 time: 0.498 , 0.007 \newline
+size: 50 time: 0.609 , 0.008 \newline
+size: 100 time: 0.984 , 0.021 \newline
+size: 200 time: 3.063 , 0.035 \newline
+size: 300 time: 8.957 , 0.114 \newline
+size: 400 time: 20.526 , 0.106 \newline
+size: 500 time: 38.194 , 0.027 \newline
+size: 600 time: 63.997 , 0.027 \newline
+size: 700 time: 100.162 , 0.020 \newline
+size: 800 time: 147.458 , 0.135 \newline
+size: 900 time: 209.182 , 0.025 \newline
+size: 1000 time: 286.169 , 0.046 \newline
 \subsubsection{CUDAfy}
+CUDAfy 1D MA in C Sharp  mean  , sdev \newline
+size: 5 time: 0,533 , 0,147 \newline
+size: 10 time: 0,478 , 0,019 \newline
+size: 20 time: 0,487 , 0,010 \newline
+size: 50 time: 0,543 , 0,012 \newline
+size: 100 time: 0,607 , 0,012 \newline
+size: 200 time: 0,87 , 0,013 \newline
+size: 300 time: 1,661 , 0,041 \newline
+size: 400 time: 3,617 , 0,047 \newline
+size: 500 time: 6,359 , 0,107 \newline
+size: 600 time: 8,456 , 0,096 \newline
+size: 700 time: 14,109 , 0,050 \newline
+size: 800 time: 19,492 , 0,035 \newline
+size: 900 time: 24,987 , 0,036 \newline
+size: 1000 time: 37,275 , 0,029 \newline
+
+CUDAfy 2D MA in C Sharp  mean  , sdev \newline
+size: 5 time: 0,499 , 0,033 \newline
+size: 10 time: 0,492 , 0,010 \newline
+size: 20 time: 0,499 , 0,005 \newline
+size: 50 time: 0,56 , 0,014 \newline
+size: 100 time: 0,74 , 0,014 \newline
+size: 200 time: 1,594 , 0,013 \newline
+size: 300 time: 3,658 , 0,116 \newline
+size: 400 time: 6,251 , 0,213 \newline
+size: 500 time: 10,728 , 0,062 \newline
+size: 600 time: 15,122 , 0,049 \newline
+size: 700 time: 22,367 , 0,051 \newline
+size: 800 time: 28,626 , 0,039 \newline
+size: 900 time: 41,546 , 0,025 \newline
+size: 1000 time: 50,958 , 0,011 \newline
 \subsubsection{C++ AMP}
+AMP 1D MA in C++  mean, sdev \newline
+size: 5 time: 0.826 , 0.373 \newline
+size: 10 time: 0.7 , 0.020 \newline
+size: 20 time: 0.694 , 0.013 \newline
+size: 50 time: 0.714 , 0.034 \newline
+size: 100 time: 0.819 , 0.017 \newline
+size: 200 time: 1.266 , 0.021 \newline
+size: 300 time: 1.999 , 0.07 \newline
+size: 400 time: 3.56 , 0.038 \newline
+size: 500 time: 6.042 , 0.039 \newline
+size: 600 time: 9.649 , 0.016 \newline
+size: 700 time: 14.629 , 0.017 \newline
+size: 800 time: 21.16 , 0.012 \newline
+size: 900 time: 30.643 , 0.027 \newline
+size: 1000 time: 42.58 , 0.044 \newline
+
+
+
 \subsubsection{C++ AMP og C\#}
+AMP 1D MA in C Sharp  mean  , sdev  \newline
+size: 5 time: 0,637 , 0,342 \newline
+size: 10 time: 0,556 , 0,022 \newline
+size: 20 time: 0,56 , 0,0205 \newline
+size: 50 time: 0,552 , 0,011 \newline
+size: 100 time: 0,656 , 0,026 \newline
+size: 200 time: 1,076 , 0,032 \newline
+size: 300 time: 1,931 , 0,046 \newline
+size: 400 time: 3,478 , 0,017 \newline
+size: 500 time: 6,009 , 0,018 \newline
+size: 600 time: 9,534 , 0,021 \newline
+size: 700 time: 14,509 , 0,023 \newline
+size: 800 time: 21,107 , 0,014 \newline
+size: 900 time: 30,587 , 0,020 \newline
+size: 1000 time: 42,488 , 0,039 \newline
+
+AMP 2D MA in C Sharp  mean  , sdev  \newline
+size: 5 time: 0,611 , 0,180 \newline
+size: 10 time: 0,562 , 0,014 \newline
+size: 20 time: 0,581 , 0,012 \newline
+size: 50 time: 0,685 , 0,007 \newline
+size: 100 time: 1,099 , 0,008 \newline
+size: 200 time: 3,061 , 0,232 \newline
+size: 300 time: 7,895 , 0,027 \newline
+size: 400 time: 14,574 , 0,080 \newline
+size: 500 time: 21,529 , 0,182 \newline
+size: 600 time: 29,924 , 0,685 \newline
+size: 700 time: 39,074 , 0,964 \newline
+size: 800 time: 54,605 , 0,070 \newline
+size: 900 time: 69,917 , 0,117 \newline
+size: 1000 time: 90,851 , 0,098 \newline
 
 \subsection{Efter Tanker}
 Det største problem jeg har haft med med CUDA og CUDAfy er, at man selv skal finde ud af hvor mange blokke og antal tråde pr. blok. Hvilket godt kan give nogen problemer når man arbejder med et program der skal arbejde med varierende input. Efter hvad jeg ar fundet på nettet angående problem med hvor mange blokke og antal tråde pr. blok man skal bruge har jeg for det meste fundet at man skal teste sig frem alt efter hvad der virker godt på det hardware man tester på.
