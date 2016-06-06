@@ -1,0 +1,16 @@
+AMP 1D MA in C Sharp  mean  , sdev 
+size: 5 time: 0,637 0,342
+size: 10 time: 0,556 0,022
+size: 20 time: 0,56 0,0205
+size: 50 time: 0,552 0,011
+size: 100 time: 0,656 0,026
+size: 200 time: 1,076 0,032
+size: 300 time: 1,931 0,046
+size: 400 time: 3,478 0,017
+size: 500 time: 6,009 0,018
+size: 600 time: 9,534 0,021
+size: 700 time: 14,509 0,023
+size: 800 time: 21,107 0,014
+size: 900 time: 30,587 0,020
+size: 1000 time: 42,488 0,039
+

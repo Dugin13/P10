@@ -3,4 +3,4 @@ For at først at kigge på mulighederne for at kode til en GPU til C Sharp, som 
 
 En anden grund til at dette kunne passe er hukommelses brug af array. I CUDAfy er hukommelsen fast låst til en form for allokering af array. Hvorimod CUDA er meget åben i forhold til hvordan du vil bruge hukommelsen, i forhold til CUDAfy. Dette kunne med føre at allokering af array igennem CUDA ikke er meget optimeret, hvorimod at igennem CUDAfy er det bedre da man programøren ikke skal rode med det aspekt af kodning og er heller ikke rigtig kigge meget på, da der ikke er en god dokumentering.
 
-en overraskende ting kan ses i CUDAfy 1d og 2d kan det ses, at det er hurtigere at håndterer data i 1d i sted for 2d
+en overraskende ting kan ses i CUDAfy 1d og 2d kan det ses, at det er hurtigere at, hvis håndterer data i 1d array i sted for 2d array, når matrixen begunder at blive have den størrelse være 10 eller over.

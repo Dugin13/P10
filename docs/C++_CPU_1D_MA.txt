@@ -1,0 +1,22 @@
+C++ CPU normal 1D MA  mean, sdev
+size: 5 time: 0.001 , 0.00316228
+size: 10 time: 0.004 , 0.00516398
+size: 20 time: 0.028 , 0.00421637
+size: 50 time: 0.447 , 0.00674949
+size: 100 time: 3.498 , 0.024404
+size: 200 time: 27.534 , 0.0800278
+size: 300 time: 103.619 , 0.376518
+size: 400 time: 247.96 , 0.31127
+size: 500 time: 530.212 , 0.827376
+
+
+C++ CPU 1D 1D MA  mean, sdev
+size: 5 time: 0.001 , 0.00316228
+size: 10 time: 0.003 , 0.00483046
+size: 20 time: 0.026 , 0.00516398
+size: 50 time: 0.408 , 0.00632456
+size: 100 time: 3.099 , 0.0119722
+size: 200 time: 24.06 , 0.0663325
+size: 300 time: 87.13 , 0.0745356
+size: 400 time: 197.637 , 4.86991
+size: 500 time: 405.61 , 24.6274
