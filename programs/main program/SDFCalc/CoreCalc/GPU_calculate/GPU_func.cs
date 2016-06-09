@@ -59,8 +59,6 @@ namespace Corecalc
             bool twoIsFunc = (input.es[1] is FunCall);
             bool twoIsNumber = (input.es[1] is NumberConst);
            
-
-
             if (oneIsFunc)
             {
                 temp.AddRange(makeFuncHelper(input.es[0] as FunCall,false));
@@ -109,8 +107,8 @@ namespace Corecalc
                     // some kind of error...
                     break;
             }
-            List<int> result = new List<int>();
 
+            List<int> result = new List<int>();
 
             if (oneIsFunc)
             {
@@ -137,9 +135,7 @@ namespace Corecalc
                     }
                 }
             }
-
             tempResult.Add(outputPlace);
-
 
             result.Add(locationOne);
             result.Add(functionValue);

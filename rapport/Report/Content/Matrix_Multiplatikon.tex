@@ -1,0 +1,234 @@
+\section{Matrix Multiplatikon}
+For at give en bedre indblik på hvor meget speed-up det giver at bruge GPU'en i forhold til CPU'en, er der fremstillet simpel programmer der går en matrix multikapion. Der er lavet to versioner for hver GPU library, der er blevet kigget på. Forskellen mellem versionerne er, at det ene gør brug af en dimension og den anden bruger to dimensioner for array. De library der er blevet tested er C++ AMP, CUDA, for C++.
+
+Testene bliver gjort for at give et bedre indblik på de forskellige valgte metoder til at kode til en GPU, om der er nogen forskel på hvordan input til GPU ser ud i forhold til om speed-up. Derefter er der blevet lavet et test program med C++ AMP der bliver kaldt fra C\# kode, for at se hvordan dette kunne gøres og om det har den store effekt på udregnings tid med at bruge denne metode der er blevet fundet. Dette bliver gjort for fordi programmet Funcalc er skrevet i C\#.
+
+Testene er blevet fremstillet efter papiret \textit{Microbenchmarks in Java and C\#} \cite{Microbenchmarks}. Af de versioner af test papiret beskriver bruges der Mark4 version.
+
+Koden der bliver gået igennem er CUDAfy med en dimension array. På kode snippet \ref{fig:MainPart1} kan del et af \textit{Main} funktion ses. \textit{testSize} er de forskellige størrelser der vil blive taget tid på, eksempelvis når den tester med værdien 20, vil den lave 2 matrixer der har størrelsen 20 X 20. Siden koden der bliver vist her, er for en dimension array, vil den lave array med \textit{Size1d}, der er \textit{Size} ganget med sig selv. værdierne der bliver lavet på linje 3 styrer hvor mange gange \textit{Mark4}, \textit{n} er hvor mange gange der skal tages tid på den samme størrelses og  \textit{count} er hvor mange gange funktion skal gøres mens der tages tid. 
+
+\textit{For} løkken der mellem på linje 5 og 22, bruges til at køre \textit{testSize} og lave en Mark 4 test med matrixer med størrelsen beskrevet i \textit{testSize}. Fra linje 7 til 16 vil de to array simple blive lavet, som vil blive lagt sammen. På linje 18 vil \textit{Mark4} blive kald, den vil returner to tal empirisk middelværdi og standard
+afvigelsen, der vil blive lagt ned i et array \textit{result}, der kommer til at holde resultaterne fra alle testende for dette program, samt størrelsen der blev testet.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+int[] testSize = new int[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+            double[,] result = new double[testSize.Length, 3];
+            int i, n = 10, count = 100;
+            
+            for (i = 0; i < testSize.Length; i++)
+            {
+                int Size = testSize[i];
+                int Size1d = Size * Size;
+                int[] A = new int[Size1d];
+                int[] B = new int[Size1d];
+                int[] C = new int[Size1d];
+                for (int x = 0; x < (Size1d); x++)
+                {
+                    A[x] = 2;
+                    B[x] = 3;
+                }
+                Console.WriteLine(testSize[i] + " starting");
+                double[] Mark4_time = Mark4(A, B, C, Size, Size1d, n, count);
+                result[i, 0] = testSize[i];
+                result[i, 1] = Mark4_time[0];
+                result[i, 2] = Mark4_time[1];
+            }
+	\end{lstlisting}
+    \caption{Første del af \textit{Main} for CUDAfy matrix multiplatikon med en dimension array.}
+    \label{fig:MainPart1}
+\end{figure}
+
+Næste til der vil blive beskrevet er \textit{Mark4} som kan ses på kode snippet \ref{fig:Mark4}. Fra linje 6 til 12 bliver GPU information fundet og gemt, samt fundet ud hvor mange tråde der max kan være i en block. Denne information bliver lavet inden målingen starter, siden denne information kan lave af starten af programmet og blive genbrugt. Fra linje 14 til linje 23 er hovede delen i \textit{Mark4}, her vil \textit{MA}, forkortelse for \textit{matrix multiplikation Algoritme}, blive testet igennem og taget tid på ved at bruge \textit{timer} klassen der kan ses påkode snippet\ref{fig:timer}.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+public static double[] Mark4(int[] A, int[] B, int[] C, int Size, int Size1d, int n, int count)
+        {
+            double dummy = 0.0;
+            double st = 0.0, sst = 0.0;
+
+            CudafyModule km = CudafyTranslator.Cudafy();
+
+            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            gpu.LoadModule(km);
+
+            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            int max_threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
+
+            for (int j = 0; j < n; j++)
+            {
+                Timer t = new Timer();
+                for (int i = 0; i < count; i++)
+                    dummy += MA(A, B, C, Size, Size1d, gpu, max_threadsPerBlock);
+                double time = t.Check() / count;
+                st += time;
+                sst += time * time;
+            }
+            double mean = st / n, sdev = Math.Sqrt((sst - mean * mean * n) / (n - 1));
+            return new double[2] { mean, sdev };
+        }
+	\end{lstlisting}
+    \caption{\textit{Mark4} klassen der bliver brugt til at teste med.}
+    \label{fig:Mark4}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+// timer class taken from the paper: Microbenchmarks in Java and C# by Peter Sestoft (sestoft@itu.dk) IT University of Copenhagen, Denmark
+    // plan on using Mark4 for tests
+    class Timer
+    {
+        private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+        public Timer() { Play(); }
+        public double Check() { return stopwatch.ElapsedMilliseconds; }
+        public void Pause() { stopwatch.Stop(); }
+        public void Play() { stopwatch.Start(); }
+    }
+	\end{lstlisting}
+    \caption{Timer klassen taget fra artiklen \textit{Microbenchmarks in Java and C\#} \cite{Microbenchmarks}.}
+    \label{fig:timer}
+\end{figure}
+
+Funktion \textit{MA} kan ses på kode snippet\ref{fig:MA}. på linjerne 4 til 6 kan det ses at der bliver allokeret plads på GPU, på linje 9 og 10 bliver data flyttet over på GPU, fra linje 12 til 24 vil den finde ud af hvor tråde og blokke der skal bruges for at kunne gennemgå funktions input. På linje 27 vil GPU funktion blive kørt, hvorefter på linje 30 vil man flytte resultatet fra GPU tilbage til CPU og til sidst vil array der er blevet allokeret blive frigivet.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+public static int MA(int[] A, int[] B, int[] C, int Size, int Size1d, GPGPU gpu, int max_threadsPerBlock)
+        {
+            // allocate the memory on the GPU
+            int[] GPU_A = gpu.Allocate<int>(A);
+            int[] GPU_B = gpu.Allocate<int>(B);
+            int[] GPU_C = gpu.Allocate<int>(C);
+
+            // copy the arrays 'a' and 'b' to the GPU
+            gpu.CopyToDevice(A, GPU_A);
+            gpu.CopyToDevice(B, GPU_B);
+
+            int threadsPerBlock = 0;
+            int blocksPerGrid = 0;
+
+            if (Size1d < max_threadsPerBlock)
+            {
+                threadsPerBlock = Size1d;
+                blocksPerGrid = 1;
+            }
+            else
+            {
+                threadsPerBlock = max_threadsPerBlock;
+                blocksPerGrid = (Size1d / max_threadsPerBlock) + 1;
+            }
+
+            // launch add on N threads
+            gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_MA(GPU_A, GPU_B, GPU_C, Size, Size1d);
+
+            // copy the array 'c' back from the GPU to the CPU
+            gpu.CopyFromDevice(GPU_C, C);
+
+            gpu.Free(GPU_A);
+            gpu.Free(GPU_B);
+            gpu.Free(GPU_C);
+            return 1;
+        }
+	\end{lstlisting}
+    \caption{\textit{matrix multiplikation Algoritme} funktion.}
+    \label{fig:MA}
+\end{figure}
+
+På kode snittet \ref{fig:GPU_MA} kan koden der bruges på GPU ses. Måden at en tråd finder dens ide på, er ved at gøre brug af \textit{thread.threadIdx}. Men dette er ikke nok fordi \textit{thread.threadIdx} giver dens id i den block den nu befinder sig i, Derfor skal der også bruges \textit{thread.blockIdx} der giver id på den block tråden befinder sig i.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+[Cudafy]
+        public static void GPU_MA(GThread thread, int[] GPU_A, int[] GPU_B, int[] GPU_C, int Size, int Size1d)
+        {
+            int i = thread.threadIdx.x + thread.blockDim.x * thread.blockIdx.x;
+
+            if (i < Size1d)
+            {
+                GPU_C[i] = 0;
+                int x = i / Size;
+                int y = i % Size;
+                for (int z = 0; z < Size; z++)
+                {
+                    GPU_C[i] += GPU_A[(x * Size) + z] * GPU_B[(z * Size) + y];
+                }
+            }
+        }
+	\end{lstlisting}
+    \caption{GPU funktion til \textit{matrix multiplikation Algoritme}.}
+    \label{fig:GPU_MA}
+\end{figure}
+
+for at gøre det mere overskueligt at kigge på resultaterne vil \textit{Main} part 2 lave en tekst fil med resultaterne i og gemme filen, kode snippet \ref{fig:MainPart2} viser denne del.
+
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+string lines = "CUDAfy 1D MA in C Sharp  mean  , sdev \r\n";
+            for (i = 0; i < testSize.Length; i++)
+            {
+                lines = lines + "size: " + result[i, 0] + " time: " + result[i, 1] + " " + result[i, 2] + "\r\n";
+            }
+
+            // Write the string to a file.
+            string path = @"c:\result\CUDAfy_1D_MA_in_C_Sharp.txt";
+            System.IO.StreamWriter file;
+            if (!System.IO.File.Exists(path))
+            {
+                file = System.IO.File.CreateText(path);
+
+            }
+            else
+            {
+                file = new System.IO.StreamWriter(path);
+            }
+            file.WriteLine(lines);
+            file.Close();
+	\end{lstlisting}
+    \caption{Anden del af \textit{Main} for CUDAfy matrix multiplatikon med en dimension array.}
+    \label{fig:MainPart2}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

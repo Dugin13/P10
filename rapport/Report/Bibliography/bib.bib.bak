@@ -1,9 +1,104 @@
 % Encoding: windows-1252
 
 
+@InProceedings{alglave2015gpu,
+  Title                    = {GPU concurrency: weak behaviours and programming assumptions},
+  Author                   = {Alglave, Jade and Batty, Mark and Donaldson, Alastair F and Gopalakrishnan, Ganesh and Ketema, Jeroen and Poetzl, Daniel and Sorensen, Tyler and Wickerson, John},
+  Booktitle                = {Proceedings of the 20th International Conference on Architectural Support for Programming Languages and Operating Systems (ASPLOS’15). ACM, New York},
+  Year                     = {2015},
+  Pages                    = {577--591}
+}
+
+@Misc{AMD_LibreOffice,
+  Title                    = {Collaboration and Open Source at AMD: LibreOffice},
+  Author                   = {jtrudeau},
+  HowPublished             = {\url{http://developer.amd.com/community/blog/author/jtrudeau/}}
+}
+
+@Article{Chestnut2012,
+  Title                    = {Chestnut: A GPU Programming Language for Non-Experts},
+  Author                   = {Andrew Stromme and Ryan Carlson and Tia Newhall},
+  Journal                  = {PMAM '12 Proceedings of the 2012 International Workshop on Programming Models and Applications for Multicores and Manycores},
+  Year                     = {2012}
+}
+
+@Article{Firepile2011,
+  Title                    = {Firepile: run-time compilation for GPUs in scala},
+  Author                   = {Nathaniel Nystrom and Derek White and Kishen Das},
+  Journal                  = {GPCE '11 Proceedings of the 10th ACM international conference on Generative programming and component engineering},
+  Year                     = {2011}
+}
+
 @Misc{FuncalcHome,
   Title                    = {Corecalc and Funcalc Spreadsheet Technology in C Sharp},
   Author                   = {IT University of Copenhagen},
   HowPublished             = {\url{http://www.itu.dk/people/sestoft/funcalc/}}
+}
+
+@Misc{GitHubProjekt,
+  Title                    = {GitHub repository for the projekt},
+  Author                   = {Niels Brøndum Pedersen},
+  HowPublished             = {\url{https://github.com/Dugin13/P10}}
+}
+
+@InProceedings{lee2010debunking,
+  Title                    = {Debunking the 100X GPU vs. CPU myth: an evaluation of throughput computing on CPU and GPU},
+  Author                   = {Lee, Victor W and Kim, Changkyu and Chhugani, Jatin and Deisher, Michael and Kim, Daehyun and Nguyen, Anthony D and Satish, Nadathur and Smelyanskiy, Mikhail and Chennupaty, Srinivas and Hammarlund, Per and others},
+  Booktitle                = {ACM SIGARCH Computer Architecture News},
+  Year                     = {2010},
+  Number                   = {3},
+  Organization             = {ACM},
+  Pages                    = {451--460},
+  Volume                   = {38}
+}
+
+@Misc{Microbenchmarks,
+  Title                    = {Microbenchmarks in Java and C Sharp},
+  Author                   = {Peter Sestoft (sestoft@itu.dk)},
+  Month                    = {9},
+  Year                     = {2015}
+}
+
+@Article{mittalsurvey,
+  Title                    = {A Survey of CPU-GPU Heterogeneous Computing Techniques},
+  Author                   = {Mittal, Sparsh and Vetter, Jeffrey S},
+  Year                     = {2015}
+}
+
+@Article{nickolls2010gpu,
+  Title                    = {The GPU computing era},
+  Author                   = {Nickolls, John and Dally, William J},
+  Journal                  = {IEEE micro},
+  Year                     = {2010},
+  Number                   = {2},
+  Pages                    = {56--69},
+  Publisher                = {IEEE}
+}
+
+@Misc{P9,
+  Title                    = {A Comparative Study of CPU and GPU Programming in Different Languages and Libraries},
+  Author                   = {Nichlas Korgaard Møller and Niels Brøndum Pedersen},
+  Month                    = {01},
+  Note                     = {P9, Autumn Semester 2015},
+  Year                     = {2016}
+}
+
+@InProceedings{samadi2012adaptive,
+  Title                    = {Adaptive input-aware compilation for graphics engines},
+  Author                   = {Samadi, Mehrzad and Hormati, Amir and Mehrara, Mojtaba and Lee, Janghaeng and Mahlke, Scott},
+  Booktitle                = {ACM SIGPLAN Notices},
+  Year                     = {2012},
+  Number                   = {6},
+  Organization             = {ACM},
+  Pages                    = {13--22},
+  Volume                   = {47}
+}
+
+@Book{Spreadsheet_Implementation_Technology,
+  Title                    = {Spreadsheet Implementation Technology: Basics and Extensions},
+  Author                   = {Peter Sestoft (sestoft@itu.dk)},
+  Editor                   = {Peter Sestoft (sestoft@itu.dk)},
+  Publisher                = {The MIT Press Cambridge Massachusetts, London, Enland},
+  Year                     = {2014}
 }
 

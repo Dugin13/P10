@@ -14,17 +14,10 @@ namespace CUDAfy_1D_MA_in_C_Sharp
     {
         static void Main(string[] args)
         {
-            int[] testSize = new int[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+            int[] testSize = new int[] { 1023 };
             double[,] result = new double[testSize.Length, 3];
             int i, n = 10, count = 100;
-
-
-
             
-            Console.WriteLine("starting--------------------------------------------------------------------::");
-
-
-
             for (i = 0; i < testSize.Length; i++)
             {
                 int Size = testSize[i];

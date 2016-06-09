@@ -7,7 +7,7 @@
 #include <math.h>
 #include <fstream> 
 
-const int MINI_SEC_IN_SEC = 1000;
+const int Millisecond_IN_SEC = 1000;
 #pragma region parallel_for_each restrict amp
 int MA(int* A, int* B, int* C, int Size, int Size1d)
 {

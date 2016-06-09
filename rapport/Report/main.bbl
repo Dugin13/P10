@@ -1,12 +1,72 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
+
+\bibitem{alglave2015gpu}
+Jade Alglave, Mark Batty, Alastair~F Donaldson, Ganesh Gopalakrishnan, Jeroen
+  Ketema, Daniel Poetzl, Tyler Sorensen, and John Wickerson.
+\newblock Gpu concurrency: weak behaviours and programming assumptions.
+\newblock In {\em Proceedings of the 20th International Conference on
+  Architectural Support for Programming Languages and Operating Systems
+  (ASPLOS’15). ACM, New York}, pages 577--591, 2015.
+
+\bibitem{lee2010debunking}
+Victor~W Lee, Changkyu Kim, Jatin Chhugani, Michael Deisher, Daehyun Kim,
+  Anthony~D Nguyen, Nadathur Satish, Mikhail Smelyanskiy, Srinivas Chennupaty,
+  Per Hammarlund, et~al.
+\newblock Debunking the 100x gpu vs. cpu myth: an evaluation of throughput
+  computing on cpu and gpu.
+\newblock In {\em ACM SIGARCH Computer Architecture News}, volume~38, pages
+  451--460. ACM, 2010.
+
+\bibitem{mittalsurvey}
+Sparsh Mittal and Jeffrey~S Vetter.
+\newblock A survey of cpu-gpu heterogeneous computing techniques.
+\newblock 2015.
+
+\bibitem{P9}
+Nichlas~Korgaard Møller and Niels~Brøndum Pedersen.
+\newblock A comparative study of cpu and gpu programming in different languages
+  and libraries, 01 2016.
+\newblock P9, Autumn Semester 2015.
+
+\bibitem{nickolls2010gpu}
+John Nickolls and William~J Dally.
+\newblock The gpu computing era.
+\newblock {\em IEEE micro}, (2):56--69, 2010.
+
+\bibitem{Firepile2011}
+Nathaniel Nystrom, Derek White, and Kishen Das.
+\newblock Firepile: run-time compilation for gpus in scala.
+\newblock {\em GPCE '11 Proceedings of the 10th ACM international conference on
+  Generative programming and component engineering}, 2011.
 
 \bibitem{FuncalcHome}
 IT~University of~Copenhagen.
 \newblock Corecalc and funcalc spreadsheet technology in c sharp.
 \newblock \url{http://www.itu.dk/people/sestoft/funcalc/}.
 
+\bibitem{GitHubProjekt}
+Niels~Brøndum Pedersen.
+\newblock Github repository for the projekt.
+\newblock \url{https://github.com/Dugin13/P10}.
+
+\bibitem{samadi2012adaptive}
+Mehrzad Samadi, Amir Hormati, Mojtaba Mehrara, Janghaeng Lee, and Scott Mahlke.
+\newblock Adaptive input-aware compilation for graphics engines.
+\newblock In {\em ACM SIGPLAN Notices}, volume~47, pages 13--22. ACM, 2012.
+
+\bibitem{Spreadsheet_Implementation_Technology}
+Peter~Sestoft (sestoft@itu.dk).
+\newblock {\em Spreadsheet Implementation Technology: Basics and Extensions}.
+\newblock The MIT Press Cambridge Massachusetts, London, Enland, 2014.
+
 \bibitem{Microbenchmarks}
 Peter~Sestoft (sestoft@itu.dk).
 \newblock Microbenchmarks in java and c sharp, 9 2015.
+
+\bibitem{Chestnut2012}
+Andrew Stromme, Ryan Carlson, and Tia Newhall.
+\newblock Chestnut: A gpu programming language for non-experts.
+\newblock {\em PMAM '12 Proceedings of the 2012 International Workshop on
+  Programming Models and Applications for Multicores and Manycores}, 2012.
 
 \end{thebibliography}

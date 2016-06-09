@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace CUDAfy_1D_MA_in_C_Sharp
 {
     // timer class taken from the paper: Microbenchmarks in Java and C# by Peter Sestoft (sestoft@itu.dk) IT University of Copenhagen, Denmark
-    // plan on using Mark3: automate multiple runs for tests
+    // plan on using Mark4 for tests
     class Timer
     {
         private readonly System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();

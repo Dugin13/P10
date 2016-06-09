@@ -7,12 +7,191 @@ Klassen \textit{GPU\_ func} i \textit{GPU\_ calculate} mappen er hvor det meste 
 \subsection{GPU\_ func}
 Klassen \textit{GPU\_ func} er der seks funktioner og en konstruktør.
 
-konstruktøren bliver brugt til at hente information om GPU'en der bruges til at bestemme om en blok er nok, hvis ikke hvor mange blokke skal der så bruges. Grunden til at information bliver hentet når man laver klassen er for minimere tiden funktion skal bruge på udregning, da jeg har observeret tager en god potion tid at hente denne information.
+konstruktøren bliver brugt til at hente information om GPU'en der bruges til at bestemme om en blok er nok, hvis ikke hvor mange blokke skal der så bruges. Grunden til at information bliver hentet når man laver klassen er for minimere tiden funktion skal bruge på udregning, da jeg har observeret tager en god potion tid at hente denne information. Konstruktøren og de globale variabler kan ses i kode snippet \ref{fig:GPU_func_K}, \textit{tempResult} bliver brugt i \textit{makeFuncHelper} til at styre hvad for nogen midlertidig variable er i brug.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+class GPU_func
+    {
+        private CudafyModule km;
+        private GPGPU gpu;
+        private GPGPUProperties GPU_prop;
+        private List<int> tempResult;
+        
+        public GPU_func()
+        {
+            km = CudafyTranslator.Cudafy();
+
+            gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            gpu.LoadModule(km);
+
+            GPU_prop = gpu.GetDeviceProperties();
+        }
+	\end{lstlisting}
+    \caption{konstruktøren for \textit{GPU\_ func} samt de globale værdier der bliver brugt i klassen}
+    \label{fig:GPU_func_K}
+\end{figure}
 
 \subsection{makeFunc}
-\textit{makeFunc} og \textit{makeFuncHelper} funktionerne bruges til at fremstille en opskrift med hvordan hvordan GPU'en skal udregne. Denne liste har \textit{X} antal a fire fire tal som er en enkle udregning (+,-,*,/). Tal første og tredje tal er hvad variabler der skal gøres noget med, det andet tal er for at bestemme hvilken udregning der skal gøres (+,-,*,/) og det fjerde og sidste bliver brugt til at bestemme om resultatet skal lige ligges i en midlertidig variable eller om den skal ligges i resultat listen.
+\textit{makeFunc} og \textit{makeFuncHelper} funktionerne bruges til at fremstille en indkodning med hvordan hvordan GPU'en skal udregne. Denne liste har \textit{X} antal a fire tal som er en enkle udregning (+,-,*,/), \textit{X} er hvor mange udregning er skal gøres i alt, for at komme til det ønskede resultat. Tal første og tredje tal er hvad variabler der skal gøres noget med, det andet tal er for at bestemme hvilken udregning der skal gøres (+,-,*,/) og det fjerde og sidste bliver brugt til at bestemme om resultatet skal lige ligges i en midlertidig variable eller om den skal ligges i resultat listen.
 
-For at give et eksemple kan vi tage regnestykket \textit{(1+2)*(3+4)}, det her ses om en kommando for GPU funktion hvor tallene bliver brugt til at bestemme hvilken kolonne, den skal tag værdien fra. Den kunne komme til at se sådan ud: (1,1,2,-1),(3,1,4,-2),(-1,3,-2,0). 1+2 er blevet lavet om til (1,1,2,-1), 3+4 er blevet om til (3,1,4,-2) og ()*() er lavet til (-1,3,-2,0). Grunden til at der står minus -1 og -2 ved udregningen for 1+2 og 3+4, er at minus værdier bliver brugt til at beskrive midlertidig variabler og 0 for output.
+\textit{makeFuncHelper} kan ses i fem dele. Første del kan ses på kode snippet \ref{fig:makeFuncHelper_part_1} hvor den finder ud af om input variabler er en funktion eller en værdi.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+private List<List<int>> makeFuncHelper(FunCall input, bool root)
+        {
+            List<List<int>> temp = new List<List<int>>();
+            int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
+            // find where to place output
+
+            bool oneIsFunc = (input.es[0] is FunCall);
+            bool oneIsNumber = (input.es[0] is NumberConst);
+            bool twoIsFunc = (input.es[1] is FunCall);
+            bool twoIsNumber = (input.es[1] is NumberConst);
+	\end{lstlisting}
+    \caption{Første del af \textit{makeFuncHelper} som kigger på variabler af input.}
+    \label{fig:makeFuncHelper_part_1}
+\end{figure}
+
+Anden del kan ses på kode snippet\ref{fig:makeFuncHelper_part_2}, denne del arbejder med inputs variablerne. Fra linje 1 til 13 er for første værdi, hvis denne værdi er en funktion, vil den kalde sig selv med funktion som input, Hvis det er en værdi, vil den tage værdien il ligge den ned i \textit{locationOne}, som er værdien der holder styr på, hvor \textit{GPUFunc} skal tage information fra for hver udregning trin. Det samme sker så for anden inputs variablerne fra linje 14 til 27.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+            if (oneIsFunc)
+            {
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall,false));
+                locationOne = temp[temp.Count - 1][3];
+            }
+            else if(oneIsNumber)
+            {
+                locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value);
+            }
+            else
+            {
+                // some kind of error...
+            }
+            if (twoIsFunc)
+            {
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
+                locationTwo = temp[temp.Count - 1][3];
+               
+            }
+            else if (twoIsNumber)
+            {
+                locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value);
+            }
+            else
+            {
+                // some kind of error...
+            }
+	\end{lstlisting}
+    \caption{Anden del af \textit{makeFuncHelper} der laver arbejdet med inputs variabler.}
+    \label{fig:makeFuncHelper_part_2}
+\end{figure}
+
+Den tredje kigger på hvilket from for udregning/operation der bliver gjort i input, dette kan ses i kode snippet \ref{fig:makeFuncHelper_part_3}
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+            int functionValue = 0; ;
+            string function = input.function.name.ToString();
+            switch (function)
+            {
+                case "+":
+                    functionValue = 1;
+                    break;
+                case "-":
+                    functionValue = 2;
+                    break;
+                case "*":
+                    functionValue = 3;
+                    break;
+                case "/":
+                    functionValue = 4;
+                    break;
+                default:
+                    // some kind of error...
+                    break;
+            }
+	\end{lstlisting}
+    \caption{Tredje del af \textit{makeFuncHelper} finder ud af hvad for en operation der sker i input.}
+    \label{fig:makeFuncHelper_part_3}
+\end{figure}
+
+Fjerde del, der kan ses på kode snippet\ref{fig:makeFuncHelper_part_4} stater med at lave en liste \textit{result} der bliver brugt til holde indkodning af input. Derefter kigger den på om inputs værdier har været funktion, hvis de er vil den fjerne den midlertidig variable for dem, siden de bliver brugt i denne udregning, kan den godt genbruge forrige brugte midlertidig variabler placeringer, for at spare på pladsen på GPU.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+            List<int> result = new List<int>();
+
+            if (oneIsFunc)
+            {
+                tempResult.RemoveAt(tempResult.FindLastIndex(x => x == locationOne));
+            }
+            if(twoIsFunc)
+            {
+                tempResult.RemoveAt(tempResult.FindLastIndex(x => x == locationTwo));
+            }
+
+            int outputPlace = 0;
+            if(!root)
+            { 
+                int x = -1;
+                while (outputPlace == 0)
+                {
+                    if(!tempResult.Contains(x))
+                    {
+                        outputPlace = x;
+                    }
+                    else
+                    {
+                        x--;
+                    }
+                }
+            }
+            tempResult.Add(outputPlace);
+	\end{lstlisting}
+    \caption{Fjerde del af \textit{makeFuncHelper} fjerner brugt midlertidig variabler placeringer for genbrug og finde ud af hvor inputs resultat skal placeres.}
+    \label{fig:makeFuncHelper_part_4}
+\end{figure}
+
+Den femte og sidste del \ref{fig:makeFuncHelper_part_5} i \textit{makeFuncHelper} ligger at hvad de tidligere dele har fundet ind i listen \textit{result} og returner \textit{temp}  der er en liste af lister, efter at have lagt \textit{result} på den.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+            result.Add(locationOne);
+            result.Add(functionValue);
+            result.Add(locationTwo);
+            result.Add(outputPlace);
+
+            temp.Add(result);
+
+            return temp;
+	\end{lstlisting}
+    \caption{Femte del af \textit{makeFuncHelper} sætter alt sammen og sender hvad den har fundet ud af tilbage.}
+    \label{fig:makeFuncHelper_part_5}
+\end{figure}
+
+For at give et eksempel på hvorden \textit{makeFunc} gør, kan vi tage regnestykket \textit{(1+2)*(3+4)}, det her ses om en kommando for GPU funktion hvor tallene bliver brugt til at bestemme hvilken kolonne, den skal tag værdien fra. Den kunne komme til at se sådan ud: (1,1,2,-1),(3,1,4,-2),(-1,3,-2,0). 1+2 er blevet lavet om til (1,1,2,-1), 3+4 er blevet om til (3,1,4,-2) og ()*() er lavet til (-1,3,-2,0). Grunden til at der står minus -1 og -2 ved udregningen for 1+2 og 3+4, er at minus værdier bliver brugt til at beskrive midlertidig variabler og 0 for output. Eg bliver \textit{(1+2)*(3+4)} til en liste der kan se sådan ud
+\begin{itemize}
+ \item 1,1,2,-1
+ \item 3,1,4,-2
+ \item -1,3,-2,0
+\end{itemize}
+
 
 \subsection{findnumberOfTempResult}
 Dette er en simple funktion der går gennem en opskrift og finder det antal af midlertidig resultater der skal bruges i opskriften.
@@ -20,17 +199,75 @@ Dette er en simple funktion der går gennem en opskrift og finder det antal af m
 \subsection{calculate}
 Når man skal bruge en GPU gennem CUDA og CUDAfy skal man gøre forskellige ting, disse ting bliver gjort her. Variablerne \textit{numberOfTempResult}, \textit{SizeOfInput}, \textit{AmountOfNumbers} og \textit{numberOfFunctions} bliver lavet til at starte med. \textit{SizeOfInput} er hvor mange koloner der er med i input, \textit{AmountOfNumbers} er hvor mange rækker der med i input.
 
-Der bliver lavet to array \textit{output} og \textit{tempResult}. \textit{tempResult} Bliver brugt til holde midlertidig resultater for GPU regne stykke, grundet dette bliver gjort her, er at mængden af midlertidig i en funktion kan variere og efter hvad jeg har kunne finde på nettet giver CUDAfy ikke mulighed for at lave et array på run time.
+Der bliver lavet to array \textit{output} og \textit{tempResult}. \textit{tempResult} Bliver brugt til holde midlertidig resultater for GPU regne stykke, grundet dette bliver gjort her, er at mængden af midlertidig i en funktion kan variere og efter hvad jeg har kunne finde på nettet giver CUDAfy ikke mulighed for at lave et array på run time på GPU tråde lokale hukommelse.
 
 Det første der bliver udregnet er, hvor mange block og tråde der skal bruges, alt efter hvad hardware kan holde til.
 
 Derefter vil array få allokeret plads på GPU, Hvorefter vil de der har nødvendig data blive send over. Derefter vil selve GPU funktion blive kaldt. Derefter vil output data blive hente tilbage fra GPU og til sidst vil den hukommelse der er brugt på array blive frigivet.
 
 \subsection{GPUFunc}
-\textit{GPUFunc} er funktion der vil blive kørt på GPU. Den har tre ting der gør for hver punkt i opskriften. Først vil den finde de variabler den skal bruge, midlertidig eller fra input, så vil den gøre noget med de to variabler den har fundet, +,-,*,/, og til sidst vil den finde ud af hvor output skal lægges hen.
+\textit{GPUFunc} er funktion der vil blive kørt på GPU. Den har tre ting der gør for hver punkt i opskriften. Først vil den finde de variabler den skal bruge, midlertidig eller fra input, så vil den gøre noget med de to variabler den har fundet, +,-,*,/, og til sidst vil den finde ud af hvor output skal lægges hen. Koden liger meget hvordan \textit{makeFuncHelper} er lavet.
 
 
 \subsection{kode i Corecalc Function klasse}
-Koden der findes i \textit{Function} for \textit{Corecalc}, der har bundet GPU koden sammen til resten af \textit{Corecalc}. Der er tre forskellige steder at kode er blevet sat ind, selve \textit{Function} har fået en private \textit{GPU\_func GPU} der bliver initierets når \textit{Function} bliver. For at GPU funktion skal kunne blive kaldt, er den blevet sat ind i tabellen af funktioner.
+Koden der findes i \textit{Function} for \textit{Corecalc}, der har bundet GPU koden sammen til resten af \textit{Corecalc}. Der er tre forskellige steder at kode er blevet sat ind, selve \textit{Function} har fået en private \textit{GPU\_func GPU} der bliver initierets når \textit{Function} bliver. For at GPU funktion skal kunne blive kaldt, er den blevet sat ind i tabellen af funktioner. de linjer der er sat ind kan ses her\ref{fig:Corecalc_FC_1}.
 
-Den sidste del af koden i denne klasse ligger i \textit{GPUFunction}, koden her er samlelede mellem \textit{Corecalc} og \textit{GPU\_ func}. Koden opgave er tage funktions kaldet input og lave det til information som \textit{GPU\_ func} klassen vil kunne bruge til at udregne med, det gør den ved at hente det beskrevet array, lave det om til et double array, derefter tager den det andet input og laver om til en opskrift. Med opskriften og double array kan den kalde \textit{calculate} der giver et double array tilbage med resultaterne, til sidst vil den fremstille et \textit{Corecalc} \textit{value} array, hvor resultatet vil blive kopieret over i og derefter vil blive sent tilbage.
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+              GPU = new GPU_func();
+              .
+              .
+              .
+              new Function("GPU", GPUFunction()); //GPUFUNC
+	\end{lstlisting}
+    \caption{Ting der er lavet i \textit{Function} konstruktøren.}
+    \label{fig:Corecalc_FC_1}
+\end{figure}
+
+
+Den sidste del af koden i denne klasse ligger i \textit{GPUFunction}\ref{fig:Corecalc_FC_2}, koden her er samlelede mellem \textit{Corecalc} og \textit{GPU\_ func}. Koden opgave er tage funktions kaldet input og lave det til information som \textit{GPU\_ func} klassen vil kunne bruge til at udregne med, det gør den ved at hente det beskrevet array, lave det om til et double array, derefter tager den det andet input og laver om til en opskrift. Med opskriften og double array kan den kalde \textit{calculate} der giver et double array tilbage med resultaterne, til sidst vil den fremstille et \textit{Corecalc} \textit{value} array, hvor resultatet vil blive kopieret over i og derefter vil blive sent tilbage.
+
+\begin{figure}[!ht]
+    \centering
+    \lstset{style=sharpc}
+	\begin{lstlisting}
+    private static Applier GPUFunction()
+    {
+        return
+          delegate(Sheet sheet, Expr[] es, int col, int row)
+          {
+              if (es.Length == 2)
+              {
+                  Value v0 = es[0].Eval(sheet, col, row);
+                  
+                  if (v0 is ErrorValue) return v0;
+                  ArrayValue v0arr = v0 as ArrayValue;
+                  if (v0arr != null)
+                  {
+                      int rows = v0arr.Rows;
+                      double[,] input = ArrayValue.ToDoubleArray2D(v0arr);
+                      int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall);
+                      double[] output = GPU.calculate(input, function);
+
+                      Value[,] result = new Value[1, rows];
+
+                      for (int r = 0; r < rows; r++)
+                          result[0,r] = NumberValue.Make(output[r]);
+
+                      return new ArrayExplicit(result);
+                  }
+                  else
+                      return ErrorValue.argTypeError;
+              }
+              else
+              {
+                  return ErrorValue.argCountError;
+              }
+          };
+    }
+	\end{lstlisting}
+    \caption{\textit{GPUFunction} der bliver brugt  \textit{Function} konstruktøren.}
+    \label{fig:Corecalc_FC_2}
+\end{figure}

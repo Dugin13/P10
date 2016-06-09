@@ -13,7 +13,7 @@ const int MINI_SEC_IN_SEC = 1000;
 
 
 #pragma region parallel_for_each restrict amp
-int MA(int A[][Size], int B[][Size], int C[][Size], int Size, int Size1d)
+int MA(int A[][Size], int B[][Size], int C[][Size])
 {
 	// fandt løsning på hvordan man lavede 2d array i amp her:
 	// https://stackoverflow.com/questions/8548016/how-to-use-a-2d-array-to-declare-an-array-view-or-array-object-in-c-amp
@@ -52,7 +52,7 @@ double* Mark3(int A[][Size], int B[][Size], int C[][Size])
 		t = clock();
 		for (int i = 0; i<count; i++)
 		{
-			dummy += MA(A, B, C, Size, Size1d);
+			dummy += MA(A, B, C);
 		}
 		t = clock() - t;
 		double time = ((double)t / CLOCKS_PER_SEC) * 10;
@@ -71,7 +71,7 @@ double* Mark4(int A[][Size], int B[][Size], int C[][Size])
 		clock_t t; // not sure if it is in right format
 		t = clock();
 		for (int i = 0; i<count; i++)
-			dummy += MA(A, B, C, Size, Size1d);
+			dummy += MA(A, B, C);
 		t = clock() - t;
 		double time = ((double)t / CLOCKS_PER_SEC) * 10;
 		st += time;
