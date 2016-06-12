@@ -137,7 +137,7 @@ namespace CUDAfy_1D_MA_in_C_Sharp
                 blocksPerGrid = (Size1d / max_threadsPerBlock) + 1;
             }
 
-            // launch add on N threads
+            // launch GPU_MA
             gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_MA(GPU_A, GPU_B, GPU_C, Size, Size1d);
 
             // copy the array 'c' back from the GPU to the CPU
