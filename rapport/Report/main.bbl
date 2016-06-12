@@ -5,8 +5,19 @@ Jade Alglave, Mark Batty, Alastair~F Donaldson, Ganesh Gopalakrishnan, Jeroen
   Ketema, Daniel Poetzl, Tyler Sorensen, and John Wickerson.
 \newblock Gpu concurrency: weak behaviours and programming assumptions.
 \newblock In {\em Proceedings of the 20th International Conference on
-  Architectural Support for Programming Languages and Operating Systems
-  (ASPLOS’15). ACM, New York}, pages 577--591, 2015.
+  Architectural Support for Programming Languages and Operating Systems (ASPLOS
+  15). ACM, New York}, pages 577--591, 2015.
+
+\bibitem{GPUP2010}
+Tim Garbos and Kasper~Videb\ae k.
+\newblock Spreadsheet optimisation on gpus.
+\newblock \url{http://www.itu.dk/garbos/gpu-spreadsheets/bachelor.pdf}, 2010.
+
+\bibitem{AMD_LibreOffice}
+jtrudeau.
+\newblock Collaboration and open source at amd: Libreoffice.
+\newblock \url{http://developer.amd.com/community/blog/author/jtrudeau/}, July
+  2015.
 
 \bibitem{lee2010debunking}
 Victor~W Lee, Changkyu Kim, Jatin Chhugani, Michael Deisher, Daehyun Kim,
@@ -17,16 +28,21 @@ Victor~W Lee, Changkyu Kim, Jatin Chhugani, Michael Deisher, Daehyun Kim,
 \newblock In {\em ACM SIGARCH Computer Architecture News}, volume~38, pages
   451--460. ACM, 2010.
 
+\bibitem{P9}
+Nichlas Korgaard~M\o ller and Niels~Br\o ndum Pedersen.
+\newblock A comparative study of cpu and gpu programming in different languages
+  and libraries, 01 2016.
+\newblock P9, Autumn Semester 2015.
+
 \bibitem{mittalsurvey}
 Sparsh Mittal and Jeffrey~S Vetter.
 \newblock A survey of cpu-gpu heterogeneous computing techniques.
 \newblock 2015.
 
-\bibitem{P9}
-Nichlas~Korgaard Møller and Niels~Brøndum Pedersen.
-\newblock A comparative study of cpu and gpu programming in different languages
-  and libraries, 01 2016.
-\newblock P9, Autumn Semester 2015.
+\bibitem{GitHubProjekt}
+Niels~Br\o ndum Pedersen.
+\newblock Github repository for the projekt.
+\newblock \url{https://github.com/Dugin13/P10}.
 
 \bibitem{nickolls2010gpu}
 John Nickolls and William~J Dally.
@@ -43,11 +59,6 @@ Nathaniel Nystrom, Derek White, and Kishen Das.
 IT~University of~Copenhagen.
 \newblock Corecalc and funcalc spreadsheet technology in c sharp.
 \newblock \url{http://www.itu.dk/people/sestoft/funcalc/}.
-
-\bibitem{GitHubProjekt}
-Niels~Brøndum Pedersen.
-\newblock Github repository for the projekt.
-\newblock \url{https://github.com/Dugin13/P10}.
 
 \bibitem{samadi2012adaptive}
 Mehrzad Samadi, Amir Hormati, Mojtaba Mehrara, Janghaeng Lee, and Scott Mahlke.

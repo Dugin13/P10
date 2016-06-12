@@ -1,16 +1,19 @@
 \section{Test af Matrix Multiplatikon}
-I denne det vil resultaterne af testende på en computer med udstyret blive vist:
+\label{Test_MM}
+I denne afsnit vil resultaterne af testende på en computer med udstyret blive vist:
 \begin{itemize}
-\item styresystem: Windows 10 Pro N
+\item Styresystem: Windows 10 Pro N
 \item Processor: intel core i5-4690K
 \item Hukommelse (RAM): 12 GB
 \item Skærmkort: NVIDIA GeForce GTX 960
 \end{itemize}
 
 \subsection{Resultater fra Programmerne} \label{result_GPU_Funcalc}
-resultater vil blive delt op efter hvad tiden er blevet målt igennem, C\# og C++. Dette er gjort fordi at C\# har muligheden for at måle i tid, kan man ikke rigtig måle i tid i C++. I C++ kan man bruge biblioteket \textit{time.h}, problemet med dette biblioteket er, at det måler i \textit{clock ticks}, der er en tidsenhed af en konstant, men systemspecifikke længde. Der findes en macro \textit{CLOCKS\_ PER\_ SEC}, som burde gøre arbejde, men med mine test kan kan jeg ikke se hvordan det passer sammen med hvad jeg får med mine C\# målinger.
+Resultater vil blive delt op efter hvad tiden er blevet målt i, C\# og C++. Dette er gjrot på grund af, at C\# har muligheden for at måle i tid ved at bruge \textit{System.Diagnostics.Stopwatch}.
 
-På tabel \ref{fig:samletCS} kan målingerne fra C\# ses og på tabel \ref{fig:samletC++} kan målingerne fra C++ ses. C++ AMP med to dimensioner array skete der en stack overflow da array blev på størrelse 300 x 300 eller over.
+Ved C++ kan man dog ikke måle tid i sekunder, efter hvad jeg har undersøgt. Man kan bruge biblioteket \textit{time.h}, problemet med dette biblioteket er, at det måler i \textit{clock ticks}, der er en tidsenhed af en konstant, med en system specifik længde. Der findes en macro \textit{CLOCKS\_ PER\_ SEC}, som burde gøre arbejde, men med mine test kan kan jeg ikke se, hvordan det passer sammen med, hvad jeg får med mine C\# målinger. For at få nogen målinger der passer forholdsvis med hinanden, er der prøvet at gøre så \textit{AMP} i C++ tid er på samme decimal, som \textit{AMP} når det bliver brugt igennem C\#.
+ 
+I figure \ref{fig:samletCS} kan en tabel ses over målingerne fra C\# ses og I figure \ref{fig:samletC++} kan målingerne fra C++ ses. \textit{C++ AMP} med to dimensioner array skete der en stack overflow da array blev på størrelse 300 x 300 eller over. Dette kun godt lade sig gøre for C\# version fordi, C\# bliver nød til at lave to dimension array om til en dimension for at kunne sende dem til C++ koden. Hvorefter at \textit{AMP} vil allokerer dem som to dimensioner igen på GPU.
 
 % ------------------------------------------------------------------------------------------------------------- samlet C#
 \begin{figure}[p]
@@ -169,7 +172,7 @@ På tabel \ref{fig:samletCS} kan målingerne fra C\# ses og på tabel \ref{fig:s
 \end{figure}
 
 \subsection{resultat af testen}
-Ud fra testen virker det som om at CUDAfy er et godt valg til at kode i, når det skal gøres i C\# . Derfor vil GPU funktion der laves i dette projekt bruge CUDAfy til at lave GPU delen med.
+Ud fra testen virker det som om at \textit{CUDAfy} er et godt valg til at kode i, når det skal gøres i C\# . Derfor vil GPU funktion der laves i dette projekt bruge \textit{CUDAfy} til at lave GPU delen med.
 
 
 

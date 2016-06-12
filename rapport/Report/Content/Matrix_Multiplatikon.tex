@@ -1,16 +1,17 @@
 \section{Matrix Multiplatikon}
-For at give en bedre indblik på hvor meget speed-up det giver at bruge GPU'en i forhold til CPU'en, er der fremstillet simpel programmer der går en matrix multikapion. Der er lavet to versioner for hver GPU library, der er blevet kigget på. Forskellen mellem versionerne er, at det ene gør brug af en dimension og den anden bruger to dimensioner for array. De library der er blevet tested er C++ AMP, CUDA, for C++.
+\label{MM}
+For at give et bedre indblik på hvor meget \textit{speed-up} det giver at bruge GPU'en i forhold til CPU'en, er der fremstillet simpel programmer der går en matrix multikapion igennem. Der er lavet to versioner for hver GPU biblioteker, der er blevet kigget på. Forskellen mellem versionerne er, at den ene gør brug af en dimension og den anden bruger to dimensioner for array. De biblioteker der er blevet tested er \textit{C++ AMP}, \textit{CUDA} og \textit{CUDAfy}.
 
-Testene bliver gjort for at give et bedre indblik på de forskellige valgte metoder til at kode til en GPU, om der er nogen forskel på hvordan input til GPU ser ud i forhold til om speed-up. Derefter er der blevet lavet et test program med C++ AMP der bliver kaldt fra C\# kode, for at se hvordan dette kunne gøres og om det har den store effekt på udregnings tid med at bruge denne metode der er blevet fundet. Dette bliver gjort for fordi programmet Funcalc er skrevet i C\#.
+Testene bliver gjort for at give et bedre indblik på de forskellige valgte metoder til at kode til en GPU, om der er nogen forskel på hvordan input til GPU ser ud i forhold til om speed-up. Derefter er der blevet lavet et test program med \textit{C++ AMP} der bliver kaldt fra C\# kode, for at se hvordan dette kunne gøres og om det har den store effekt på udregnings tid med at bruge denne metode der er blevet fundet. Dette bliver gjort for fordi programmet Funcalc er skrevet i C\#.
 
-Testene er blevet fremstillet efter papiret \textit{Microbenchmarks in Java and C\#} \cite{Microbenchmarks}. Af de versioner af test papiret beskriver bruges der Mark4 version.
+Test metoden er blevet fremstillet efter artiklen \textit{Microbenchmarks in Java and C\#} \cite{Microbenchmarks}. Af de versioner af test artiklen beskriver bruges der \textit{Mark4} version.
 
-Koden der bliver gået igennem er CUDAfy med en dimension array. På kode snippet \ref{fig:MainPart1} kan del et af \textit{Main} funktion ses. \textit{testSize} er de forskellige størrelser der vil blive taget tid på, eksempelvis når den tester med værdien 20, vil den lave 2 matrixer der har størrelsen 20 X 20. Siden koden der bliver vist her, er for en dimension array, vil den lave array med \textit{Size1d}, der er \textit{Size} ganget med sig selv. værdierne der bliver lavet på linje 3 styrer hvor mange gange \textit{Mark4}, \textit{n} er hvor mange gange der skal tages tid på den samme størrelses og  \textit{count} er hvor mange gange funktion skal gøres mens der tages tid. 
+Koden der bliver gået igennem er \textit{CUDAfy} med en dimension \textit{array}. På figure \ref{fig:MainPart1} kan del et af koden for \textit{Main} funktion ses. \textit{testSize} er de forskellige størrelser der vil blive taget tid på, eksempelvis når den tester med værdien 20, vil den lave 2 matrixer der har størrelsen 20 X 20. Siden koden der bliver vist her, er for en dimension \textit{array}, vil den lave \textit{array} med \textit{Size1d}, der er \textit{Size} ganget med sig selv. værdierne der bliver lavet på linje 3 styrer hvor mange gange \textit{Mark4}, variablen \textit{n} er hvor mange gange der skal tages tid på den samme størrelses og  \textit{count} er hvor mange gange funktion skal gøres mens der tages tid. 
 
-\textit{For} løkken der mellem på linje 5 og 22, bruges til at køre \textit{testSize} og lave en Mark 4 test med matrixer med størrelsen beskrevet i \textit{testSize}. Fra linje 7 til 16 vil de to array simple blive lavet, som vil blive lagt sammen. På linje 18 vil \textit{Mark4} blive kald, den vil returner to tal empirisk middelværdi og standard
-afvigelsen, der vil blive lagt ned i et array \textit{result}, der kommer til at holde resultaterne fra alle testende for dette program, samt størrelsen der blev testet.
+\textit{For} løkken der mellem på linje 5 og 22, bruges til at køre \textit{testSize} og lave en Mark 4 test med matrixer med størrelsen beskrevet i \textit{testSize}. Fra linje 7 til 16 vil de to \textit{array} simpel blive lavet, disse \textit{array} bruges til input for matrix multiplatikon. På linje 18 vil \textit{Mark4} blive kaldt, den vil returner to tal empirisk middelværdi og standard
+afvigelsen, der vil blive lagt ned i et \textit{array} \textit{result}, der kommer til at holde resultaterne fra alle testende for dette program, samt størrelsen der blev testet.
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -37,13 +38,13 @@ int[] testSize = new int[] { 5, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 8
                 result[i, 2] = Mark4_time[1];
             }
 	\end{lstlisting}
-    \caption{Første del af \textit{Main} for CUDAfy matrix multiplatikon med en dimension array.}
+    \caption{Første del af \textit{Main} for CUDAfy matrix multiplatikon med en dimension \textit{array}.}
     \label{fig:MainPart1}
 \end{figure}
 
-Næste til der vil blive beskrevet er \textit{Mark4} som kan ses på kode snippet \ref{fig:Mark4}. Fra linje 6 til 12 bliver GPU information fundet og gemt, samt fundet ud hvor mange tråde der max kan være i en block. Denne information bliver lavet inden målingen starter, siden denne information kan lave af starten af programmet og blive genbrugt. Fra linje 14 til linje 23 er hovede delen i \textit{Mark4}, her vil \textit{MA}, forkortelse for \textit{matrix multiplikation Algoritme}, blive testet igennem og taget tid på ved at bruge \textit{timer} klassen der kan ses påkode snippet\ref{fig:timer}.
+Det næste til der vil blive beskrevet er \textit{Mark4} som kan ses på figure \ref{fig:Mark4}. Fra linje 6 til 12 bliver GPU information fundet og gemt, samt fundet ud hvor mange tråde der max kan være i en block. Denne information bliver lavet inden målingen starter, siden denne information kan laves starten af programmet og blive genbrugt. Fra linje 14 til linje 23 er hovede delen i \textit{Mark4}, her vil \textit{MA}, forkortelse for \textit{matrix multiplikation Algoritme}, blive testet igennem og taget tid på ved at bruge \textit{timer} klassen der kan ses påkode snippet\ref{fig:timer}.
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -77,7 +78,7 @@ public static double[] Mark4(int[] A, int[] B, int[] C, int Size, int Size1d, in
     \label{fig:Mark4}
 \end{figure}
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -96,9 +97,9 @@ public static double[] Mark4(int[] A, int[] B, int[] C, int Size, int Size1d, in
     \label{fig:timer}
 \end{figure}
 
-Funktion \textit{MA} kan ses på kode snippet\ref{fig:MA}. på linjerne 4 til 6 kan det ses at der bliver allokeret plads på GPU, på linje 9 og 10 bliver data flyttet over på GPU, fra linje 12 til 24 vil den finde ud af hvor tråde og blokke der skal bruges for at kunne gennemgå funktions input. På linje 27 vil GPU funktion blive kørt, hvorefter på linje 30 vil man flytte resultatet fra GPU tilbage til CPU og til sidst vil array der er blevet allokeret blive frigivet.
+Funktion \textit{MA} kan ses på figure \ref{fig:MA}. på linjerne 4 til 6 kan det ses at der bliver allokeret plads på GPU, på linje 9 og 10 bliver data flyttet over på GPU, fra linje 12 til 24 vil den finde ud af hvor tråde og blokke der skal bruges for at kunne gennemgå funktions input. På linje 27 vil GPU funktion blive kørt, hvorefter på linje 30 vil man flytte resultatet fra GPU tilbage til CPU og til sidst vil \textit{array} der er blevet allokeret blive frigivet.
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -127,7 +128,7 @@ public static int MA(int[] A, int[] B, int[] C, int Size, int Size1d, GPGPU gpu,
                 blocksPerGrid = (Size1d / max_threadsPerBlock) + 1;
             }
 
-            // launch add on N threads
+            // launch GPU_MA
             gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_MA(GPU_A, GPU_B, GPU_C, Size, Size1d);
 
             // copy the array 'c' back from the GPU to the CPU
@@ -145,7 +146,7 @@ public static int MA(int[] A, int[] B, int[] C, int Size, int Size1d, GPGPU gpu,
 
 På kode snittet \ref{fig:GPU_MA} kan koden der bruges på GPU ses. Måden at en tråd finder dens ide på, er ved at gøre brug af \textit{thread.threadIdx}. Men dette er ikke nok fordi \textit{thread.threadIdx} giver dens id i den block den nu befinder sig i, Derfor skal der også bruges \textit{thread.blockIdx} der giver id på den block tråden befinder sig i.
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -170,10 +171,10 @@ På kode snittet \ref{fig:GPU_MA} kan koden der bruges på GPU ses. Måden at en
     \label{fig:GPU_MA}
 \end{figure}
 
-for at gøre det mere overskueligt at kigge på resultaterne vil \textit{Main} part 2 lave en tekst fil med resultaterne i og gemme filen, kode snippet \ref{fig:MainPart2} viser denne del.
+For at gøre det mere overskueligt at kigge på resultaterne vil \textit{Main} part 2 lave en tekst fil med resultaterne i og gemme filen, kode snippet \ref{fig:MainPart2} viser denne del.
 
 
-\begin{figure}[!ht]
+\begin{figure}[h]
     \centering
     \lstset{style=sharpc}
 	\begin{lstlisting}
@@ -198,7 +199,7 @@ string lines = "CUDAfy 1D MA in C Sharp  mean  , sdev \r\n";
             file.WriteLine(lines);
             file.Close();
 	\end{lstlisting}
-    \caption{Anden del af \textit{Main} for CUDAfy matrix multiplatikon med en dimension array.}
+    \caption{Anden del af \textit{Main} for \textit{CUDAfy} matrix multiplatikon med en dimension \textit{array}.}
     \label{fig:MainPart2}
 \end{figure}
 

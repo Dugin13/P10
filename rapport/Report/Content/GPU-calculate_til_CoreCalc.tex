@@ -1,13 +1,14 @@
 \section{GPU-calculate til CoreCalc}
+\label{GPU_CC}
 I dette projekt vil CUDAfy blive brugt, til at øge regnekræften i open source programmet \textit{Funcalc} der kan findes på hjemmesiden \cite{FuncalcHome}.
-\textit{Funcalc} en udvidelse til Corecalc, der er en implementering af et regneark funktionalitet lavet i sproget C\#, det er lavet som et forskning prototype som ikke er ment for kunne blive brugt i stedet for de officielse versioner, såsom Microsoft Excel.
+\textit{Funcalc} en udvidelse til \textit{Corecalc}, der er en implementering af et regneark funktionalitet lavet i sproget C\#, det er lavet som et forskning prototype som ikke er lavet til at kunne blive brugt i stedet for de officielse versioner, såsom Microsoft Excel.
 
-Klassen \textit{GPU\_ func} i \textit{GPU\_ calculate} mappen er hvor det meste arbejde ligger fra dette projekt. For at kunne bruge det jeg har fremstillet, er der også tilført noget kode i klassen \textit{Function}.
+Klassen \textit{GPU\_ func} i \textit{GPU\_ calculate} mappen er hvor det meste arbejde ligger fra dette projekt. For at kunne bruge det, har jeg også tilført noget kode i klassen \textit{Function} i \textit{Corecalc}.
 
 \subsection{GPU\_ func}
 Klassen \textit{GPU\_ func} er der seks funktioner og en konstruktør.
 
-konstruktøren bliver brugt til at hente information om GPU'en der bruges til at bestemme om en blok er nok, hvis ikke hvor mange blokke skal der så bruges. Grunden til at information bliver hentet når man laver klassen er for minimere tiden funktion skal bruge på udregning, da jeg har observeret tager en god potion tid at hente denne information. Konstruktøren og de globale variabler kan ses i kode snippet \ref{fig:GPU_func_K}, \textit{tempResult} bliver brugt i \textit{makeFuncHelper} til at styre hvad for nogen midlertidig variable er i brug.
+Konstruktøren bliver brugt til at hente information om GPU'en, der bruges til at bestemme om en blok er nok, hvis ikke hvor mange blokke skal der så bruges. Grunden til at information bliver hentet, når man laver klassen er for minimere tiden funktion skal bruge på udregning, da jeg har observeret, at det tager en god potion tid at hente denne information. Konstruktøren og de globale variabler kan ses i figure \ref{fig:GPU_func_K}, \textit{tempResult} bliver brugt i \textit{makeFuncHelper} til at styre hvad for nogen midlertidig variable er i brug.
 
 \begin{figure}[!ht]
     \centering
@@ -35,9 +36,11 @@ class GPU_func
 \end{figure}
 
 \subsection{makeFunc}
-\textit{makeFunc} og \textit{makeFuncHelper} funktionerne bruges til at fremstille en indkodning med hvordan hvordan GPU'en skal udregne. Denne liste har \textit{X} antal a fire tal som er en enkle udregning (+,-,*,/), \textit{X} er hvor mange udregning er skal gøres i alt, for at komme til det ønskede resultat. Tal første og tredje tal er hvad variabler der skal gøres noget med, det andet tal er for at bestemme hvilken udregning der skal gøres (+,-,*,/) og det fjerde og sidste bliver brugt til at bestemme om resultatet skal lige ligges i en midlertidig variable eller om den skal ligges i resultat listen.
+\textit{makeFunc} og \textit{makeFuncHelper} funktionerne bruges til at fremstille en indkodning af hvordan hvordan GPU'en skal udregne, ud fra at abstrakt syntaks træ af et udtryk. Denne liste har \textit{X} antal a fire tal som er en enkle udregning (+,-,*,/) med to værdier, \textit{X} er hvor mange udregning er skal gøres i alt, for at komme til resultatet som udtrykket vil give.
 
-\textit{makeFuncHelper} kan ses i fem dele. Første del kan ses på kode snippet \ref{fig:makeFuncHelper_part_1} hvor den finder ud af om input variabler er en funktion eller en værdi.
+Tallene i den enkle udregning har en bestemt mening, første og tredje tal er hvad variabler der skal gøres noget med, det andet tal er for at bestemme hvilken udregning der skal gøres (+,-,*,/) og det fjerde og sidste bliver brugt til at bestemme om resultatet skal lige ligges i en midlertidig variable eller om den skal ligges i resultat listen.
+
+\textit{makeFuncHelper} kan ses i fem dele. Første del kan ses på figure \ref{fig:makeFuncHelper_part_1} hvor den finder ud af om input variabler er en funktion eller en værdi. Det skal pointeres at \textit{makeFuncHelper} er en rekursiv funktion, der er lavet for at gå igennem det abstrakt syntaks træ nemt.
 
 \begin{figure}[!ht]
     \centering
@@ -58,7 +61,7 @@ private List<List<int>> makeFuncHelper(FunCall input, bool root)
     \label{fig:makeFuncHelper_part_1}
 \end{figure}
 
-Anden del kan ses på kode snippet\ref{fig:makeFuncHelper_part_2}, denne del arbejder med inputs variablerne. Fra linje 1 til 13 er for første værdi, hvis denne værdi er en funktion, vil den kalde sig selv med funktion som input, Hvis det er en værdi, vil den tage værdien il ligge den ned i \textit{locationOne}, som er værdien der holder styr på, hvor \textit{GPUFunc} skal tage information fra for hver udregning trin. Det samme sker så for anden inputs variablerne fra linje 14 til 27.
+Anden del kan ses på figure \ref{fig:makeFuncHelper_part_2}, denne del arbejder med inputs variablerne. Fra linje 1 til 13 er for første værdi, hvis denne værdi er en funktion, vil den kalde sig selv med funktion som input, Hvis det er en værdi, vil den tage værdien og ligge den ned i \textit{locationOne}, som er værdien der holder styr på, hvor \textit{GPUFunc} skal tage information fra for hver udregning trin. Det samme sker så for anden inputs variablerne fra linje 14 til 27.
 
 \begin{figure}[!ht]
     \centering
@@ -96,7 +99,7 @@ Anden del kan ses på kode snippet\ref{fig:makeFuncHelper_part_2}, denne del arb
     \label{fig:makeFuncHelper_part_2}
 \end{figure}
 
-Den tredje kigger på hvilket from for udregning/operation der bliver gjort i input, dette kan ses i kode snippet \ref{fig:makeFuncHelper_part_3}
+Den tredje kigger på hvilket form for udregning/operation der bliver gjort i input, dette kan ses i figure \ref{fig:makeFuncHelper_part_3}
 
 \begin{figure}[!ht]
     \centering
@@ -127,7 +130,9 @@ Den tredje kigger på hvilket from for udregning/operation der bliver gjort i in
     \label{fig:makeFuncHelper_part_3}
 \end{figure}
 
-Fjerde del, der kan ses på kode snippet\ref{fig:makeFuncHelper_part_4} stater med at lave en liste \textit{result} der bliver brugt til holde indkodning af input. Derefter kigger den på om inputs værdier har været funktion, hvis de er vil den fjerne den midlertidig variable for dem, siden de bliver brugt i denne udregning, kan den godt genbruge forrige brugte midlertidig variabler placeringer, for at spare på pladsen på GPU.
+Fjerde del der kan ses på figure \ref{fig:makeFuncHelper_part_4} stater med at lave en liste \textit{result}, der bliver brugt til holde indkodning af input i dette point i det abstraktet syntaks træ.
+
+Hvis der har været brugt midlertidig variable for dens input variabler, vil den fjerne dem fra listen fra brugte midlertidig variable liste \textit{tempResult}. Dette er gjort for at spare på pladsen på GPU ved at genbruge midlertidig variable placeringer, hvor det er muligt.
 
 \begin{figure}[!ht]
     \centering
@@ -166,7 +171,7 @@ Fjerde del, der kan ses på kode snippet\ref{fig:makeFuncHelper_part_4} stater m
     \label{fig:makeFuncHelper_part_4}
 \end{figure}
 
-Den femte og sidste del \ref{fig:makeFuncHelper_part_5} i \textit{makeFuncHelper} ligger at hvad de tidligere dele har fundet ind i listen \textit{result} og returner \textit{temp}  der er en liste af lister, efter at have lagt \textit{result} på den.
+Den femte og sidste del \ref{fig:makeFuncHelper_part_5} i \textit{makeFuncHelper} gemmer hvad de tidligere dele har fundet ind i listen \textit{result} og returner \textit{temp}  der er en liste af lister, efter at have lagt \textit{result} på den.
 
 \begin{figure}[!ht]
     \centering
@@ -194,23 +199,25 @@ For at give et eksempel på hvorden \textit{makeFunc} gør, kan vi tage regnesty
 
 
 \subsection{findnumberOfTempResult}
-Dette er en simple funktion der går gennem en opskrift og finder det antal af midlertidig resultater der skal bruges i opskriften.
+Dette er en simple funktion der går gennem en indkodningen og finder det antal af midlertidig resultater der skal bruges i indkodningen.
 
 \subsection{calculate}
-Når man skal bruge en GPU gennem CUDA og CUDAfy skal man gøre forskellige ting, disse ting bliver gjort her. Variablerne \textit{numberOfTempResult}, \textit{SizeOfInput}, \textit{AmountOfNumbers} og \textit{numberOfFunctions} bliver lavet til at starte med. \textit{SizeOfInput} er hvor mange koloner der er med i input, \textit{AmountOfNumbers} er hvor mange rækker der med i input.
+Når man skal bruge en GPU gennem CUDA og CUDAfy skal man gøre forskellige ting, disse ting bliver gjort her. Variablerne \textit{numberOfTempResult}, \textit{SizeOfInput},  \textit{AmountOfNumbers} og \textit{numberOfFunctions} bliver lavet til at starte med. \textit{SizeOfInput} er hvor mange koloner der er med i input, \textit{AmountOfNumbers} er hvor mange rækker der med i input.
 
-Der bliver lavet to array \textit{output} og \textit{tempResult}. \textit{tempResult} Bliver brugt til holde midlertidig resultater for GPU regne stykke, grundet dette bliver gjort her, er at mængden af midlertidig i en funktion kan variere og efter hvad jeg har kunne finde på nettet giver CUDAfy ikke mulighed for at lave et array på run time på GPU tråde lokale hukommelse.
+Der bliver lavet to \textit{array} \textit{output} og \textit{tempResult}. \textit{tempResult} Bliver brugt til holde midlertidig resultater på GPU når indkodning af udtrykket bliver læst igennem, grundet dette bliver gjort her, er at antal af midlertidig resultater der skal gemmes i en funktion kan variere alt efter hvor kompliceret den er og efter hvad der er fundet på nettet, giver CUDAfy ikke mulighed for at lave et \textit{array} på run time på GPU tråde lokale hukommelse.
 
-Det første der bliver udregnet er, hvor mange block og tråde der skal bruges, alt efter hvad hardware kan holde til.
+Det første der bliver udregnet er, hvor mange block og tråde der skal bruges, alt efter hvad hardware kan håndter.
 
-Derefter vil array få allokeret plads på GPU, Hvorefter vil de der har nødvendig data blive send over. Derefter vil selve GPU funktion blive kaldt. Derefter vil output data blive hente tilbage fra GPU og til sidst vil den hukommelse der er brugt på array blive frigivet.
+Derefter vil alle \textit{array} få allokeret plads på GPU. De \textit{array} der bliver sent til GPU, vil være dem med information om input data og indkodning af udtrykket, \textit{array} der er blevet allokeret for de midlertidig resultater vil ikke blive send til GPU, da dette \textit{array} ikke holder information fra CPU, som GPU skal bruge.
+
+Hvorefter vil de, der har nødvendig data blive send over. Derefter vil selve GPU funktion blive kaldt. Derefter vil output data blive hente tilbage fra GPU og til sidst vil den hukommelse der er brugt på \textit{array} blive frigivet.
 
 \subsection{GPUFunc}
-\textit{GPUFunc} er funktion der vil blive kørt på GPU. Den har tre ting der gør for hver punkt i opskriften. Først vil den finde de variabler den skal bruge, midlertidig eller fra input, så vil den gøre noget med de to variabler den har fundet, +,-,*,/, og til sidst vil den finde ud af hvor output skal lægges hen. Koden liger meget hvordan \textit{makeFuncHelper} er lavet.
+\textit{GPUFunc} er funktion der vil blive kørt på GPU. Den har tre ting den gør for hver punkt i indkodningen. Først vil den finde de variabler den skal bruge, midlertidig eller fra input, så vil den gøre noget med de to variabler den har fundet, +,-,*,/, og til sidst vil den finde ud af hvor output skal lægges hen. Koden har meget til fælles med \textit{makeFuncHelper}, på grund af den læser indkodningen og udregner alt efter, hvad indkodningen beskriver i sted for at lave en indkodningen.
 
 
 \subsection{kode i Corecalc Function klasse}
-Koden der findes i \textit{Function} for \textit{Corecalc}, der har bundet GPU koden sammen til resten af \textit{Corecalc}. Der er tre forskellige steder at kode er blevet sat ind, selve \textit{Function} har fået en private \textit{GPU\_func GPU} der bliver initierets når \textit{Function} bliver. For at GPU funktion skal kunne blive kaldt, er den blevet sat ind i tabellen af funktioner. de linjer der er sat ind kan ses her\ref{fig:Corecalc_FC_1}.
+Koden der lavet i \textit{Function} klassen i \textit{Corecalc}, der har bundet GPU koden sammen til resten af \textit{Corecalc}. Der er tre forskellige steder, at kode er blevet sat ind, selve \textit{Function} har fået en private \textit{GPU\_func GPU} der bliver initierets når \textit{Function} bliver. For at GPU funktion skal kunne blive kaldt, er den blevet sat ind i tabellen af funktioner. De linjer der er sat ind kan ses  på figure  \ref{fig:Corecalc_FC_1}.
 
 \begin{figure}[!ht]
     \centering
@@ -227,7 +234,7 @@ Koden der findes i \textit{Function} for \textit{Corecalc}, der har bundet GPU k
 \end{figure}
 
 
-Den sidste del af koden i denne klasse ligger i \textit{GPUFunction}\ref{fig:Corecalc_FC_2}, koden her er samlelede mellem \textit{Corecalc} og \textit{GPU\_ func}. Koden opgave er tage funktions kaldet input og lave det til information som \textit{GPU\_ func} klassen vil kunne bruge til at udregne med, det gør den ved at hente det beskrevet array, lave det om til et double array, derefter tager den det andet input og laver om til en opskrift. Med opskriften og double array kan den kalde \textit{calculate} der giver et double array tilbage med resultaterne, til sidst vil den fremstille et \textit{Corecalc} \textit{value} array, hvor resultatet vil blive kopieret over i og derefter vil blive sent tilbage.
+Den sidste del af koden i denne klasse ligger i \textit{GPUFunction}, kan ses i figure \ref{fig:Corecalc_FC_2}, koden her er samlelede mellem \textit{Corecalc} og \textit{GPU\_ func}. Kodens opgave er tage funktions kaldet input og lave det til information som \textit{GPU\_ func} klassen vil kunne bruge til at udregne med, det gør den ved at hente det beskrevet \textit{array}, lave det om til et double \textit{array}, derefter tager den det andet input og laver om til en indkodning. Med indkodningen og double \textit{array} kan den kalde \textit{calculate} der giver et double \textit{array} tilbage med resultaterne, til sidst vil den fremstille et \textit{Corecalc} \textit{value} \textit{array}, hvor resultatet vil blive kopieret over i og derefter vil blive sent tilbage.
 
 \begin{figure}[!ht]
     \centering
