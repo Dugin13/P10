@@ -1084,24 +1084,42 @@ namespace Corecalc {
           {
               if (es.Length == 2)
               {
-                  Value v0 = es[0].Eval(sheet, col, row);
-                  
-                  if (v0 is ErrorValue) return v0;
-                  ArrayValue v0arr = v0 as ArrayValue;
-                  if (v0arr != null)
+                  if (es[0] is CellArea && es[1] is FunCall)
                   {
+                      Value v0 = es[0].Eval(sheet, col, row);
 
-                      int rows = v0arr.Rows;
-                      double[,] input = ArrayValue.ToDoubleArray2D(v0arr);
-                      int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall);
-                      double[] output = GPU.calculate(input, function);
+                      if (v0 is ErrorValue) return v0;
+                      ArrayValue v0arr = v0 as ArrayValue;
 
-                      Value[,] result = new Value[1, rows];
+                      int[,] array_points = new int[2, 2];
 
-                      for (int r = 0; r < rows; r++)
-                          result[0,r] = NumberValue.Make(output[r]);
+                      {
+                          ArrayView v0view = v0 as ArrayView;
+                          array_points[0, 0] = v0view.ulCa.col;
+                          array_points[0, 1] = v0view.ulCa.row;
+                          array_points[1, 0] = v0view.lrCa.col;
+                          array_points[1, 1] = v0view.lrCa.row;
+                      }
+                      
+                      if (v0arr != null)
+                      {
+                          
 
-                      return new ArrayExplicit(result);
+
+                          int rows = v0arr.Rows;
+                          double[,] input = ArrayValue.ToDoubleArray2D(v0arr);
+                          int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall, col, row, array_points);
+                          double[] output = GPU.calculate(input, function);
+
+                          Value[,] result = new Value[1, rows];
+
+                          for (int r = 0; r < rows; r++)
+                              result[0, r] = NumberValue.Make(output[r]);
+
+                          return new ArrayExplicit(result);
+                      }
+                      else
+                          return ErrorValue.argTypeError;
                   }
                   else
                       return ErrorValue.argTypeError;

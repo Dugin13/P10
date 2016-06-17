@@ -25,11 +25,11 @@ namespace Corecalc
 
             GPU_prop = gpu.GetDeviceProperties();
         }
-        
-        public int[,] makeFunc(FunCall input)
+
+        public int[,] makeFunc(FunCall input, int col, int row, int[,] array_points)
         {
             tempResult = new List<int>();
-            List<List<int>> temp = makeFuncHelper(input, true);
+            List<List<int>> temp = makeFuncHelper(input, true, col, row, array_points);
 
             int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
 
@@ -48,7 +48,7 @@ namespace Corecalc
             return result;
         }
 
-        private List<List<int>> makeFuncHelper(FunCall input, bool root)
+        private List<List<int>> makeFuncHelper(FunCall input, bool root, int col, int row, int[,] array_points)
         {
             List<List<int>> temp = new List<List<int>>();
             int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
@@ -56,17 +56,34 @@ namespace Corecalc
 
             bool oneIsFunc = (input.es[0] is FunCall);
             bool oneIsNumber = (input.es[0] is NumberConst);
+            bool oneIsRef = (input.es[0] is CellRef);
             bool twoIsFunc = (input.es[1] is FunCall);
             bool twoIsNumber = (input.es[1] is NumberConst);
+            bool twoIsRef = (input.es[1] is CellRef);
            
             if (oneIsFunc)
             {
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall,false));
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, false, col, row, array_points));
                 locationOne = temp[temp.Count - 1][3];
             }
             else if(oneIsNumber)
             {
                 locationOne = (int)Value.ToDoubleOrNan((input.es[0] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else if (oneIsRef)
+            {
+                CellRef celltemp = input.es[0] as CellRef;
+                int cell_col = celltemp.raref.colRef + col;
+                int cell_row = celltemp.raref.rowRef + row;
+                if(cell_col >= array_points[0,0] && cell_col <= array_points[1,0] &&
+                    cell_row >= array_points[0,1] && cell_row <= array_points[1,1])
+                {
+                    locationOne = cell_col - array_points[0, 0] + 1;
+                }
+                else
+                {
+                    // some kind of error... or const
+                }
             }
             else
             {
@@ -74,13 +91,28 @@ namespace Corecalc
             }
             if (twoIsFunc)
             {
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false));
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false, col, row, array_points));
                 locationTwo = temp[temp.Count - 1][3];
                
             }
             else if (twoIsNumber)
             {
                 locationTwo = (int)Value.ToDoubleOrNan((input.es[1] as NumberConst).value); //TODO: ved ikke om der en nemmerer måde at gøre det her på
+            }
+            else if(twoIsRef)
+            {
+                CellRef celltemp = input.es[1] as CellRef;
+                int cell_col = celltemp.raref.colRef + col;
+                int cell_row = celltemp.raref.rowRef + row;
+                if (cell_col >= array_points[0, 0] && cell_col <= array_points[1, 0] &&
+                    cell_row >= array_points[0, 1] && cell_row <= array_points[1, 1])
+                {
+                    locationTwo = cell_col - array_points[0, 0] + 1;
+                }
+                else
+                {
+                    // some kind of error... or const
+                }
             }
             else
             {
