@@ -15,6 +15,7 @@ namespace Corecalc
         private GPGPU gpu;
         private GPGPUProperties GPU_prop;
         private List<int> tempResult;
+        private List<double> ConstantsList;
         
         public GPU_func()
         {
@@ -26,10 +27,23 @@ namespace Corecalc
             GPU_prop = gpu.GetDeviceProperties();
         }
 
-        public int[,] makeFunc(FunCall input, int col, int row, int[,] array_points)
+        public double[] Get_ConstantsList()
+        {
+            if (ConstantsList.Count ==0)
+            {
+                return new double[1];
+            }
+            else
+            {
+                return ConstantsList.ToArray();
+            }
+        }
+
+        public int[,] makeFunc(FunCall input, Sheet sheet, int col, int row, int[,] array_points)
         {
             tempResult = new List<int>();
-            List<List<int>> temp = makeFuncHelper(input, true, col, row, array_points);
+            ConstantsList = new List<double>();
+            List<List<int>> temp = makeFuncHelper(input, true, sheet, col, row, array_points);
 
             int[][] tempArray = temp.Select(l => l.ToArray()).ToArray();
 
@@ -48,7 +62,7 @@ namespace Corecalc
             return result;
         }
 
-        private List<List<int>> makeFuncHelper(FunCall input, bool root, int col, int row, int[,] array_points)
+        private List<List<int>> makeFuncHelper(FunCall input, bool root, Sheet sheet, int col, int row, int[,] array_points)
         {
             List<List<int>> temp = new List<List<int>>();
             int locationOne = 0, locationTwo = 0; // used to hold the temp locating of the result
@@ -63,7 +77,7 @@ namespace Corecalc
            
             if (oneIsFunc)
             {
-                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, false, col, row, array_points));
+                temp.AddRange(makeFuncHelper(input.es[0] as FunCall, false, sheet, col, row, array_points));
                 locationOne = temp[temp.Count - 1][3];
             }
             else if(oneIsNumber)
@@ -82,7 +96,17 @@ namespace Corecalc
                 }
                 else
                 {
-                    // some kind of error... or const
+                    // handling of const variables
+                    double constValue = Value.ToDoubleOrNan(input.es[0].Eval(sheet, col, row));
+                    if (!ConstantsList.Contains(constValue))
+                    {
+                        ConstantsList.Add(constValue);
+                        locationOne = col + ConstantsList.IndexOf(constValue)+1;
+                    }
+                    else
+                    {
+                        locationOne = col + ConstantsList.IndexOf(constValue)+1;
+                    }
                 }
             }
             else
@@ -91,7 +115,7 @@ namespace Corecalc
             }
             if (twoIsFunc)
             {
-                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false, col, row, array_points));
+                temp.AddRange(makeFuncHelper(input.es[1] as FunCall, false, sheet, col, row, array_points));
                 locationTwo = temp[temp.Count - 1][3];
                
             }
@@ -111,7 +135,17 @@ namespace Corecalc
                 }
                 else
                 {
-                    // some kind of error... or const
+                    // handling of const variables
+                    double constValue = Value.ToDoubleOrNan(input.es[1].Eval(sheet, col, row));
+                    if (!ConstantsList.Contains(constValue))
+                    {
+                        ConstantsList.Add(constValue);
+                        locationTwo = col + ConstantsList.IndexOf(constValue)+1;
+                    }
+                    else
+                    {
+                        locationTwo = col + ConstantsList.IndexOf(constValue)+1;
+                    }
                 }
             }
             else
@@ -212,12 +246,13 @@ namespace Corecalc
             return number;
         }
 
-        public double[] calculate(double[,] input, int[,] func)
+        public double[] calculate(double[,] input, int[,] func, double[] constValues)
         {
             int numberOfTempResult = findnumberOfTempResult(func);
             int SizeOfInput = input.GetLength(1);
             int AmountOfNumbers = input.GetLength(0);
             int numberOfFunctions = func.GetLength(0);
+            int NumberOfImputNumbers = input.GetLength(1);
 
             double[] output = new double[AmountOfNumbers];
             double[,] tempResult = makeEmtyTempResult(AmountOfNumbers, numberOfTempResult);
@@ -241,16 +276,26 @@ namespace Corecalc
             // allocate the memory on the GPU
             double[,] GPU_input = gpu.Allocate<double>(input);
             double[,] GPU_tempResult = gpu.Allocate<double>(tempResult);
+            double[] GPU_constValues = gpu.Allocate<double>(constValues);
             double[] GPU_output = gpu.Allocate<double>(output);
             int[,] GPU_func = gpu.Allocate<int>(func);
 
             // copy the arrays to GPU
             gpu.CopyToDevice(input, GPU_input);
             gpu.CopyToDevice(func, GPU_func);
+            gpu.CopyToDevice(constValues, GPU_constValues);
             //gpu.CopyToDevice(tempResult, GPU_tempResult);
 
             // had to add Microsoft.CSharp.dll references for this to work ?
-            gpu.Launch(threadsPerBlock, blocksPerGrid).GPUFunc(GPU_input, GPU_output, GPU_func, GPU_tempResult, AmountOfNumbers, numberOfFunctions);
+            gpu.Launch(threadsPerBlock, blocksPerGrid).GPUFunc(
+                GPU_input,
+                GPU_output,
+                GPU_func,
+                GPU_tempResult,
+                GPU_constValues,
+                AmountOfNumbers,
+                numberOfFunctions,
+                NumberOfImputNumbers);
             
             // copy the array 'c' back from the GPU to the CPU
             gpu.CopyFromDevice(GPU_output, output);
@@ -258,6 +303,7 @@ namespace Corecalc
             gpu.Free(GPU_input);
             gpu.Free(GPU_tempResult);
             gpu.Free(GPU_output);
+            gpu.Free(GPU_constValues);
             gpu.Free(GPU_func);
 
 
@@ -266,7 +312,15 @@ namespace Corecalc
         }
 
         [Cudafy]
-        private static void GPUFunc(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
+        private static void GPUFunc(GThread thread,
+            double[,] GPU_input,
+            double[] GPU_output,
+            int[,] GPU_func,
+            double[,] GPU_TempResult,
+            double[] GPU_constValues,
+            int AmountOfNumbers,
+            int number_Of_Functions,
+            int NumberOfImputNumbers)
         {
             int i = thread.threadIdx.x + thread.blockDim.x * thread.blockIdx.x;
             if (i < AmountOfNumbers)
@@ -279,7 +333,14 @@ namespace Corecalc
                     if (GPU_func[x, 0] > 0)
                     {
                         int temp_index = GPU_func[x, 0] - 1;
-                        input_1 = GPU_input[i, temp_index];
+                        if (temp_index < NumberOfImputNumbers)
+                        {
+                            input_1 = GPU_input[i, temp_index];
+                        }
+                        else
+                        {
+                            input_1 = GPU_constValues[temp_index - NumberOfImputNumbers];
+                        }
                     }
                     else
                     {
@@ -290,7 +351,14 @@ namespace Corecalc
                     if (GPU_func[x, 2] > 0)
                     {
                         int temp_index = GPU_func[x, 2] - 1;
-                        input_2 = GPU_input[i, temp_index];
+                        if (temp_index < NumberOfImputNumbers)
+                        {
+                            input_2 = GPU_input[i, temp_index];
+                        }
+                        else
+                        {
+                            input_2 = GPU_constValues[temp_index - NumberOfImputNumbers];
+                        }
                     }
                     else
                     {

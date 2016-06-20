@@ -1108,8 +1108,9 @@ namespace Corecalc {
 
                           int rows = v0arr.Rows;
                           double[,] input = ArrayValue.ToDoubleArray2D(v0arr);
-                          int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall, col, row, array_points);
-                          double[] output = GPU.calculate(input, function);
+                          int[,] function = GPU.makeFunc(es[1] as Corecalc.FunCall, sheet, col, row, array_points);
+                          double[] constValues = GPU.Get_ConstantsList();
+                          double[] output = GPU.calculate(input, function, constValues);
 
                           Value[,] result = new Value[1, rows];
 
