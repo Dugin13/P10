@@ -5,8 +5,7 @@
 #include <amp.h>
 #include <iostream>
 #include <vector>
-
-int _tmain(int argc, _TCHAR* argv[])
+void lambda_test()
 {
 	const int Size = 3;
 	const int Size1d = Size*Size;
@@ -34,7 +33,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		input[3][i] = D[i];
 		Output[i] = 0;
 	}
-	std::vector<int> func; 
+	std::vector<int> func;
 	//for (i = 0; i < 3; i++)
 	//{
 	//	for (x = 0; x < 4; x++)
@@ -69,9 +68,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	concurrency::array_view<int, 2> GPU_input(Size_Of_input, Size1d, p_input);
 	concurrency::array_view<int, 1> GPU_output(Size1d, Output);
 	GPU_output.discard_data();
-	
+
 	concurrency::array_view<int, 2> GPU_Func(number_Of_Functions, 4, func);
-	
+
 	std::vector<int> Temp_result;
 	for (i = 0; i < Size1d; i++)
 	{
@@ -114,10 +113,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				int temp_index = (GPU_Func[x][2] * -1) - 1;
 				input_2 = GPU_Temp_result[i][temp_index];
 			}
-			int temp_result=0;
+			int temp_result = 0;
 			// -----------------------------------------------------------------------------
 			// finding which operator to used
-			if (GPU_Func[x][1] == 1 ) // (+)
+			if (GPU_Func[x][1] == 1) // (+)
 			{
 				temp_result = input_1 + input_2;
 			}
@@ -159,6 +158,50 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	std::string str;
 	std::getline(std::cin, str);
+}
+
+void plus_Test()
+{
+	const int length = 10;
+
+	int A[length], B[length], C[length];
+	for (int i = 0; i < length; i++)
+	{
+		A[i] = 2;
+		B[i] = 3;
+		C[i] = 0;
+		std::cout << "C[" << i << "] = " << C[i] << std::endl;
+	}
+	std::cout << "----------------------------------"<< std::endl;
+	concurrency::array_view<int, 1> GPU_A(length, A);
+	concurrency::array_view<int, 1> GPU_B(length, B);
+	concurrency::array_view<int, 1> GPU_C(length, C);
+	GPU_C.discard_data();
+	
+	concurrency::parallel_for_each(GPU_C.extent, [=](concurrency::index<1> idx) restrict(amp)
+	{
+		int i = idx[0];
+		GPU_C[i] = GPU_A[i] + GPU_B[i];
+	});
+	GPU_C.synchronize();
+
+	for (int i = 0; i < length; i++)
+	{
+		std::cout << "C[" << i << "] = " << C[i] << std::endl;
+	}
+
+}
+
+
+
+int _tmain(int argc, _TCHAR* argv[])
+{
+	//lambda_test();
+	plus_Test();
+
+
+
+
 
 	return 0;
 }

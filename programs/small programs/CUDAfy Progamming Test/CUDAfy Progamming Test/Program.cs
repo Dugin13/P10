@@ -50,9 +50,13 @@ namespace CUDAfy_Progamming_Test
         }
         static void Main(string[] args)
         {
-            bacisrun();
+            //bacisrun();
 
-            classrun();
+            //classrun();
+
+            plus_test();
+
+            int i = 0;
         }
         static void bacisrun()
         {
@@ -151,8 +155,6 @@ namespace CUDAfy_Progamming_Test
             GPU.calculate(input, func);
         }
 
-
-
         [Cudafy]
         public static void GPU_test(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
         {
@@ -162,8 +164,6 @@ namespace CUDAfy_Progamming_Test
                 GPU_output[i] = i;
             }
         }
-
-
 
         [Cudafy]
         public static void GPU_func(GThread thread, double[,] GPU_input, double[] GPU_output, int[,] GPU_func, double[,] GPU_TempResult, int AmountOfNumbers, int number_Of_Functions)
@@ -312,5 +312,79 @@ namespace CUDAfy_Progamming_Test
             }
 
         }
+
+
+
+
+
+        static void plus_test()
+        {
+            int lenght = 10;
+            int[] A = new int[lenght];
+            int[] B = new int[lenght];
+            int[] C = new int[lenght];
+
+            for (int i = 0; i < lenght; i++ )
+            {
+                A[i] = 2;
+                B[i] = 3;
+                Console.WriteLine("C["+i+"] = "+C[i]);
+            }
+            Console.WriteLine("------------------------");
+            CudafyModule km = CudafyTranslator.Cudafy();
+
+            GPGPU gpu = CudafyHost.GetDevice(CudafyModes.Target, CudafyModes.DeviceId);
+            gpu.LoadModule(km);
+
+            GPGPUProperties GPU_prop = gpu.GetDeviceProperties();
+            int threadsPerBlock = 0;
+            int blocksPerGrid = 0;
+            if (lenght < GPU_prop.MaxThreadsPerBlock)
+            {
+                threadsPerBlock = lenght;
+                blocksPerGrid = 1;
+            }
+            else
+            {
+                threadsPerBlock = GPU_prop.MaxThreadsPerBlock;
+                blocksPerGrid = (lenght / GPU_prop.MaxThreadsPerBlock) + 1;
+            }
+
+            // allocate the memory on the GPU
+            int[] GPU_A = gpu.Allocate<int>(A);
+            int[] GPU_B = gpu.Allocate<int>(B);
+            int[] GPU_C = gpu.Allocate<int>(C);
+
+            // copy the arrays to GPU
+            gpu.CopyToDevice(A, GPU_A);
+            gpu.CopyToDevice(B, GPU_B);
+
+            // launch add on N threads
+            gpu.Launch(threadsPerBlock, blocksPerGrid).GPU_plus(GPU_A,GPU_B,GPU_C,lenght);
+
+            // copy the array 'c' back from the GPU to the CPU
+            gpu.CopyFromDevice(GPU_C, C);
+
+            gpu.Free(GPU_A);
+            gpu.Free(GPU_B);
+            gpu.Free(GPU_C);
+            for (int i = 0; i < lenght; i++)
+            {
+                Console.WriteLine("C[" + i + "] = " + C[i]);
+            }
+
+        }
+
+        [Cudafy]
+        public static void GPU_plus(GThread thread,int[] GPU_A,int []GPU_B, int[] GPU_C, int lenght)
+        {
+            int i = thread.threadIdx.x + thread.blockDim.x * thread.blockIdx.x;
+            if (i < lenght)
+                GPU_C[i] = GPU_A[i] + GPU_B[i];
+        }
+
+
+
+
     }
 }
